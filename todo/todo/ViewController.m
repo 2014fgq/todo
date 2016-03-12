@@ -61,6 +61,29 @@
     self.tableView.backgroundColor = [UIColor blackColor];
     self.tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight       = NORMAL_CELL_FINISHING_HEIGHT;
+    
+    self.title = @"Todo";
+    [self tableview_navigationview_setup:self];
+
+}
+
+#pragma mark fix the tablewview and navigationview
+- (void)tableview_navigationview_setup:(UIViewController *)viewcontroller
+{
+    //由于是ios7以上才存在navigationview和tablewview之间留空的问题
+    float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+    if (systemVersion >= 7.0) {
+        
+        viewcontroller.edgesForExtendedLayout = UIRectEdgeNone;
+        
+    }
+    //添加一个HeaderView去占据那个位置，不过这个方法还是有遗留问题，当程序初始化的时候，会有一段空白
+    //    UIView *headerView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 320, NORMAL_CELL_FINISHING_HEIGHT)];
+    //    viewcontroller.tableView.tableHeaderView = headerView;
+    
+    //第二种方法，不行
+    //viewcontroller.tableView.contentInset = UIEdgeInsetsMake(NORMAL_CELL_FINISHING_HEIGHT, 0, 0, 0);
+    //viewcontroller.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(NORMAL_CELL_FINISHING_HEIGHT, 0, 0, 0);
 }
 
 #pragma mark Private Method
