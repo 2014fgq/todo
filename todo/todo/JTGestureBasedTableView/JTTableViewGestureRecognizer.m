@@ -221,7 +221,7 @@ CGFloat const JTTableViewRowAnimationDuration          = 0.25;       // Rough gu
         if ([self.delegate respondsToSelector:@selector(gestureRecognizer:lengthForCommitEditingRowAtIndexPath:)]) {
             commitEditingLength = [self.delegate gestureRecognizer:self lengthForCommitEditingRowAtIndexPath:indexPath];
         }
-        if (fabsf(translation.x) >= commitEditingLength) {
+        if (fabs(translation.x) >= commitEditingLength) {
             if (self.addingCellState == JTTableViewCellEditingStateMiddle) {
                 self.addingCellState = translation.x > 0 ? JTTableViewCellEditingStateRight : JTTableViewCellEditingStateLeft;
             }
@@ -250,7 +250,7 @@ CGFloat const JTTableViewRowAnimationDuration          = 0.25;       // Rough gu
         if ([self.delegate respondsToSelector:@selector(gestureRecognizer:lengthForCommitEditingRowAtIndexPath:)]) {
             commitEditingLength = [self.delegate gestureRecognizer:self lengthForCommitEditingRowAtIndexPath:indexPath];
         }
-        if (fabsf(translation.x) >= commitEditingLength) {
+        if (fabs(translation.x) >= commitEditingLength) {
             if ([self.delegate respondsToSelector:@selector(gestureRecognizer:commitEditingState:forRowAtIndexPath:)]) {
                 [self.delegate gestureRecognizer:self commitEditingState:self.addingCellState forRowAtIndexPath:indexPath];
             }
@@ -384,7 +384,7 @@ CGFloat const JTTableViewRowAnimationDuration          = 0.25;       // Rough gu
         // The pan gesture recognizer will fail the original scrollView scroll
         // gesture, we wants to ensure we are panning left/right to enable the
         // pan gesture.
-        if (fabsf(point.y) > fabsf(point.x)) {
+        if (fabs(point.y) > fabs(point.x)) {
             return NO;
         } else if (indexPath == nil) {
             return NO;
@@ -486,7 +486,7 @@ CGFloat const JTTableViewRowAnimationDuration          = 0.25;       // Rough gu
                 [self.delegate gestureRecognizer:self needsAddRowAtIndexPath:self.addingIndexPath];
                 [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:self.addingIndexPath] withRowAnimation:UITableViewRowAnimationNone];
 
-                self.addingRowHeight = fabsf(scrollView.contentOffset.y);
+                self.addingRowHeight = fabs(scrollView.contentOffset.y);
                 [self.tableView endUpdates];
             }
         }
