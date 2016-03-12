@@ -13,6 +13,9 @@
 		88D92CD01C93B9C600F57305 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88D92CCE1C93B9C600F57305 /* Main.storyboard */; };
 		88D92CD21C93B9C600F57305 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88D92CD11C93B9C600F57305 /* Assets.xcassets */; };
 		88D92CD51C93B9C600F57305 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88D92CD31C93B9C600F57305 /* LaunchScreen.storyboard */; };
+		88D92CE31C93BB9800F57305 /* JTTableViewGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D92CDE1C93BB9800F57305 /* JTTableViewGestureRecognizer.m */; };
+		88D92CE41C93BB9800F57305 /* JTTransformableTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D92CE01C93BB9800F57305 /* JTTransformableTableViewCell.m */; };
+		88D92CE51C93BB9800F57305 /* UIColor+JTGestureBasedTableViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D92CE21C93BB9800F57305 /* UIColor+JTGestureBasedTableViewHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +29,12 @@
 		88D92CD11C93B9C600F57305 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		88D92CD41C93B9C600F57305 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		88D92CD61C93B9C600F57305 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		88D92CDD1C93BB9800F57305 /* JTTableViewGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JTTableViewGestureRecognizer.h; sourceTree = "<group>"; };
+		88D92CDE1C93BB9800F57305 /* JTTableViewGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JTTableViewGestureRecognizer.m; sourceTree = "<group>"; };
+		88D92CDF1C93BB9800F57305 /* JTTransformableTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JTTransformableTableViewCell.h; sourceTree = "<group>"; };
+		88D92CE01C93BB9800F57305 /* JTTransformableTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JTTransformableTableViewCell.m; sourceTree = "<group>"; };
+		88D92CE11C93BB9800F57305 /* UIColor+JTGestureBasedTableViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+JTGestureBasedTableViewHelper.h"; sourceTree = "<group>"; };
+		88D92CE21C93BB9800F57305 /* UIColor+JTGestureBasedTableViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+JTGestureBasedTableViewHelper.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +67,7 @@
 		88D92CC41C93B9C600F57305 /* todo */ = {
 			isa = PBXGroup;
 			children = (
+				88D92CDC1C93BB9800F57305 /* JTGestureBasedTableView */,
 				88D92CC81C93B9C600F57305 /* AppDelegate.h */,
 				88D92CC91C93B9C600F57305 /* AppDelegate.m */,
 				88D92CCB1C93B9C600F57305 /* ViewController.h */,
@@ -77,6 +87,19 @@
 				88D92CC61C93B9C600F57305 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		88D92CDC1C93BB9800F57305 /* JTGestureBasedTableView */ = {
+			isa = PBXGroup;
+			children = (
+				88D92CDD1C93BB9800F57305 /* JTTableViewGestureRecognizer.h */,
+				88D92CDE1C93BB9800F57305 /* JTTableViewGestureRecognizer.m */,
+				88D92CDF1C93BB9800F57305 /* JTTransformableTableViewCell.h */,
+				88D92CE01C93BB9800F57305 /* JTTransformableTableViewCell.m */,
+				88D92CE11C93BB9800F57305 /* UIColor+JTGestureBasedTableViewHelper.h */,
+				88D92CE21C93BB9800F57305 /* UIColor+JTGestureBasedTableViewHelper.m */,
+			);
+			path = JTGestureBasedTableView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -151,8 +174,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				88D92CCD1C93B9C600F57305 /* ViewController.m in Sources */,
+				88D92CE31C93BB9800F57305 /* JTTableViewGestureRecognizer.m in Sources */,
 				88D92CCA1C93B9C600F57305 /* AppDelegate.m in Sources */,
+				88D92CE41C93BB9800F57305 /* JTTransformableTableViewCell.m in Sources */,
 				88D92CC71C93B9C600F57305 /* main.m in Sources */,
+				88D92CE51C93BB9800F57305 /* UIColor+JTGestureBasedTableViewHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
