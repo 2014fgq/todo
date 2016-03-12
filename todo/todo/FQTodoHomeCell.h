@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FQGroup.h"
 //#import "MCSwipeTableViewCell.h"
 //@interface FQTodoHomeCell : MCSwipeTableViewCell
 #import "UIColor+Hex.h"
@@ -14,6 +15,9 @@
 @property (strong, nonatomic) UITextField *textfield;
 @property (strong, nonatomic) UILabel *label;
 @property (strong, nonatomic) UILabel *seplabel;
+@property (strong, nonatomic) FQGroup *groupModel;
+- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 + (instancetype)TodoHomeCellWithTableView:(UITableView *)tableView;
+- (void)setGroupModel:(FQGroup *)groupModel;
 @end
 
