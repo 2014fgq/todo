@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 //#import "MCSwipeTableViewCell.h"
 //@interface FQTodoHomeCell : MCSwipeTableViewCell
+#import "UIColor+Hex.h"
 @interface FQTodoHomeCell : UITableViewCell
 @property (strong, nonatomic) UITextField *textfield;
 @property (strong, nonatomic) UILabel *label;
+@property (strong, nonatomic) UILabel *seplabel;
 + (instancetype)TodoHomeCellWithTableView:(UITableView *)tableView;
 @end
 
