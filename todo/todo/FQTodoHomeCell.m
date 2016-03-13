@@ -9,7 +9,7 @@
 #import "FQTodoHomeCell.h"
 
 
-@implementation FQTodoHomeCell
+@implementation FQTodoHomeCell 
 
 - (void)awakeFromNib {
     // Initialization code
@@ -107,6 +107,7 @@
     
     self.textfield.text = groupModel.groupname;
     self.textfield.textColor = [UIColor whiteColor];
+    self.textfield.delegate = self;
 
     //修改显示内容
 //    self.textLabel.adjustsFontSizeToFitWidth = YES;
@@ -167,6 +168,42 @@
     return _textfield;
 }
 
+#pragma mark - UITextField的协议
+- (void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    NSLog(@"touhes Began");
+}
+
+- (NSArray *)textfieldAtIndexes:(NSIndexSet *)indexes
+{
+    NSLog(@"%@", indexes);
+    return nil;
+}
+- ( BOOL )textFieldShouldBeginEditing:( UITextField *)textField
+{
+    NSLog ( @"textFieldShouldBeginEditing");
+    return YES ;
+}
+- (void)textFieldWillBeginEditing:(UITextField *)textField
+{
+    NSLog(@"textFieldWillBeginEditing");
+}
+- (void)textFieldWillEndEditing:(UITextField *)textField
+{
+    NSLog(@"textFieldWillEndEditing");
+}
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    NSLog(@"textFieldDidBeginEditing");
+    //当开始点击textfield的时候，光标进入，有且只有触发一次,调用代理，告诉当前点击的textfield。
+    if([self.delegate respondsToSelector:@selector(SetCurCellByIdxPath:)])
+        [self.delegate SetCurCellByIdxPath:self.IdxPath];
+    
+}
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    NSLog(@"textFieldDidEndEditing");
+}
 /*
  [self configurecellinfo:cell forRowAtIndexPath:indexPath];
  [self configureCell:cell forRowAtIndexPath:indexPath];*/

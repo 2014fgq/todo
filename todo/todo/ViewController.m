@@ -12,13 +12,14 @@
 #import "UIColor+JTGestureBasedTableViewHelper.h"
 #import "UIColor+Hex.h"
 #import "FQTodoHomeCell.h"
+#import "FQGroup.h"
 // Configure your viewController to conform to JTTableViewGestureEditingRowDelegate
 // and/or JTTableViewGestureAddingRowDelegate depends on your needs
-@interface ViewController () <JTTableViewGestureEditingRowDelegate, JTTableViewGestureAddingRowDelegate, JTTableViewGestureMoveRowDelegate>
+@interface ViewController () <JTTableViewGestureEditingRowDelegate, JTTableViewGestureAddingRowDelegate, JTTableViewGestureMoveRowDelegate, FQTodoHomeCellDelegate>
 @property (nonatomic, strong) NSMutableArray *rows;
 @property (nonatomic, strong) JTTableViewGestureRecognizer *tableViewRecognizer;
 @property (nonatomic, strong) id grabbedObject;
-
+@property (nonatomic, strong) NSIndexPath *IdxPath;
 - (void)moveRowToBottomForIndexPath:(NSIndexPath *)indexPath;
 
 @end
@@ -81,24 +82,15 @@
 #pragma mark - 键盘更改frame的时候，键盘弹出
 - (void)keyboardWillChangeFrame:(NSNotification*)notification
 {
-    //NSLog(@"keyboard %@", notification);
-    //向上平移键盘的高度
-    //获取键盘的Y值
-//    CGRect rectEnd = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-//    CGFloat keyboard = rectEnd.origin.y;
-//    CGFloat keyboardbefore = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y;
-//    CGFloat tranformValue = keyboard - self.tableView.frame.origin.y;
-//    NSLog(@"keyboard y:%f, begin %f, diff %f, view %f, tableview %f, scroll %f",
-//          keyboard,keyboardbefore, keyboard - keyboardbefore,
-//          self.view.frame.origin.y, self.tableView.frame.origin.y, tranformValue);
-    
+    NSLog(@"keyboardWillChangeFrame %f", [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y);
+
     //不适用willshow,willhide,didshow,didhide方法，因为hide太慢了,为了对称，show都不使用了
     //获取键盘弹入弹出时的位置
     CGFloat keyboardbefore = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y;
     CGFloat keyboardend = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].origin.y;
     CGFloat diff = keyboardend - keyboardbefore;
     NSInteger scroll = 0;
-    NSInteger Idx = 3;
+    NSInteger Idx = self.IdxPath.row;
     //根据diff来判断键盘是弹入还是弹出
     if(diff < 0) //弹出
         scroll = -Idx*NORMAL_CELL_FINISHING_HEIGHT;
@@ -134,6 +126,13 @@
     }];
     NSLog(@"tableview %f",
           self.tableView.frame.origin.y);
+}
+
+#pragma mark - FQTodoHomeCellDelegate
+- (void) SetCurCellByIdxPath:(NSIndexPath *)IdxPath
+{
+    //设置当前的IdxPath
+    self.IdxPath = IdxPath;
 }
 
 #pragma mark - 懒加载
@@ -286,6 +285,12 @@
         FQTodoHomeCell *cell = [FQTodoHomeCell TodoHomeCellWithTableView:self.tableView];
         //设置cell的默认底色
         cell.contentView.backgroundColor = backgroundColor;
+        
+        //记录tap
+        cell.IdxPath = indexPath;
+        
+        //设置delegate
+        cell.delegate = self;
         
         //将obj赋给model.groupname
         [group SetTypeByObj:(NSString *)object];
