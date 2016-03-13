@@ -19,6 +19,16 @@
     return _group;
 }
 
+- (void)SetTypeByObj:(NSString *)obj
+{
+    if([obj isEqual:DONE_CELL])
+        self.type = GROUP_TYPE_DUMMY;
+    else if ([obj isEqual:DUMMY_CELL])
+        self.type = GROUP_TYPE_DUMMY;
+    else
+        self.type = GROUP_TYPE_NORMAL;
+}
+
 - (void)initWithDict
 {
     

@@ -65,15 +65,13 @@
 - (void) layoutSubviews
 {
     [super layoutSubviews];
+    self.textfield.frame = self.bounds;
 }
 
 - (void)setGroupModel:(FQGroup *)groupModel
 {
     //赋值
-    groupModel = groupModel;
-    //配置cell左边的textfield
-    //self.textfield.text = groupModel.groupname;
-    //self.textfield.backgroundColor = self.contentView.backgroundColor;
+    _groupModel = groupModel;
 
     //配置右边的label
     self.label.adjustsFontSizeToFitWidth = YES;
@@ -91,12 +89,53 @@
     self.label.font = [UIFont fontWithName:@"Helvetica" size:10];
     self.label.backgroundColor = [UIColor colorWithHex:0x44566A];
 
+    //增加分割线
     self.seplabel.backgroundColor = [UIColor lightGrayColor];
     self.seplabel.frame = CGRectMake(self.frame.origin.x, 0, self.frame.size.width+70, 0.2);
     //cell.seplabel.backgroundColor = backgroundColor;
     //cell.textfield.backgroundColor = backgroundColor;
+    
+    //配置cell左边的textfield
+    UIView *leftview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 1)];
+    self.textfield.leftView = leftview;
+    self.textfield.leftViewMode = UITextFieldViewModeAlways;
+    
+    self.textfield.adjustsFontSizeToFitWidth = YES;
+    self.textfield.backgroundColor = [UIColor clearColor];
+    //self.textfield.shadowOffset = CGSizeMake(0, 1);
+    //self.textfield.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
+    
+    self.textfield.text = groupModel.groupname;
+    self.textfield.textColor = [UIColor whiteColor];
+
+    //修改显示内容
+//    self.textLabel.adjustsFontSizeToFitWidth = YES;
+//    self.textLabel.backgroundColor = [UIColor clearColor];
+//    self.textLabel.shadowOffset = CGSizeMake(0, 1);
+//    self.textLabel.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
+//    
+//    self.textLabel.text = groupModel.groupname;
+//    self.textLabel.textColor = [UIColor whiteColor];
+    
+    switch (groupModel.type)
+    {
+        case GROUP_TYPE_DUMMY:
+        {
+            self.textfield.textColor = [UIColor grayColor];
+            self.contentView.backgroundColor = [UIColor darkGrayColor];
+            break;
+        }
+        case GROUP_TYPE_DONE:
+        {
+            self.textfield.text = @"";
+            self.contentView.backgroundColor = [UIColor blackColor];
+        }
+        default:
+            break;
+    }
 }
 
+#pragma mark - 子控件初始化
 - (UILabel *)seplabel
 {
     if (!_seplabel) {
@@ -104,6 +143,10 @@
         [self addSubview:_seplabel];
     }
     return _seplabel;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (UILabel *)label

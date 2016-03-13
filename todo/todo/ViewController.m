@@ -28,12 +28,6 @@
 @synthesize tableViewRecognizer;
 @synthesize grabbedObject;
 
-#define ADDING_CELL @"Continue..."
-#define DONE_CELL @"Done"
-#define DUMMY_CELL @"Dummy"
-#define COMMITING_CREATE_CELL_HEIGHT 60
-#define NORMAL_CELL_FINISHING_HEIGHT 60
-
 #pragma mark - View lifecycle
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -65,9 +59,84 @@
     
     self.title = @"Todo";
     [self tableview_navigationview_setup:self];
-
+    [self install_keyboardNoti];
 }
 
+#pragma mark - 监听键盘
+-(void) install_keyboardNoti
+{
+    //监听键盘弹出事件
+    //监听键盘通知
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardDidHideNotification object:nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDidShow:) name:UIKeyboardDidShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    
+    //UIKeyboardDidShowNotification,键盘显示
+    //UIKeyboardDidHideNotification,键盘隐藏
+    //UIKeyboardWillChangeFrameNotification,键盘frame改变
+    
+}
+
+#pragma mark - 键盘更改frame的时候，键盘弹出
+- (void)keyboardWillChangeFrame:(NSNotification*)notification
+{
+    //NSLog(@"keyboard %@", notification);
+    //向上平移键盘的高度
+    //获取键盘的Y值
+//    CGRect rectEnd = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//    CGFloat keyboard = rectEnd.origin.y;
+//    CGFloat keyboardbefore = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y;
+//    CGFloat tranformValue = keyboard - self.tableView.frame.origin.y;
+//    NSLog(@"keyboard y:%f, begin %f, diff %f, view %f, tableview %f, scroll %f",
+//          keyboard,keyboardbefore, keyboard - keyboardbefore,
+//          self.view.frame.origin.y, self.tableView.frame.origin.y, tranformValue);
+    
+    //不适用willshow,willhide,didshow,didhide方法，因为hide太慢了,为了对称，show都不使用了
+    //获取键盘弹入弹出时的位置
+    CGFloat keyboardbefore = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y;
+    CGFloat keyboardend = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].origin.y;
+    CGFloat diff = keyboardend - keyboardbefore;
+    NSInteger scroll = 0;
+    NSInteger Idx = 3;
+    //根据diff来判断键盘是弹入还是弹出
+    if(diff < 0) //弹出
+        scroll = -Idx*NORMAL_CELL_FINISHING_HEIGHT;
+    else
+        scroll = 0;//不滚动，为0
+    
+    //动画展示键盘弹入弹出
+    [UIView animateWithDuration:0.25 animations:^{
+        self.view.transform = CGAffineTransformMakeTranslation(0, scroll);
+    }];
+    //NSIndexPath *randomIdxPath = [NSIndexPath indexPathForRow:4 inSection:0];
+    //[self.tableView scrollToRowAtIndexPath:randomIdxPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+}
+
+- (void)keyboardWillDidShow:(NSNotification*)notification
+{
+    NSLog(@"tableview %f",
+          self.tableView.frame.origin.y);
+    NSInteger Idx = 3;
+    [UIView animateWithDuration:0.25 animations:^{
+        self.view.transform = CGAffineTransformMakeTranslation(0, -Idx * NORMAL_CELL_FINISHING_HEIGHT);
+    }];
+    NSLog(@"tableview %f",
+          self.tableView.frame.origin.y);
+}
+
+- (void)keyboardWillHide:(NSNotification*)notification
+{
+        NSLog(@"tableview %f",
+              self.tableView.frame.origin.y);
+    [UIView animateWithDuration:0.1 animations:^{
+        self.view.transform = CGAffineTransformMakeTranslation(0, 0);
+    }];
+    NSLog(@"tableview %f",
+          self.tableView.frame.origin.y);
+}
+
+#pragma mark - 懒加载
 - (NSMutableArray *)groups
 {
     if(!_groups)
@@ -197,50 +266,33 @@
                 cell.textLabel.textColor = [UIColor whiteColor];
             }
             
-            // Setup tint color
-            cell.tintColor = backgroundColor;
-            
             cell.finishedHeight = COMMITING_CREATE_CELL_HEIGHT;
             if (cell.frame.size.height > COMMITING_CREATE_CELL_HEIGHT) {
                 cell.textLabel.text = @"释放新建列表";
             } else {
                 cell.textLabel.text = @"请继续捏合";
             }
-            cell.contentView.backgroundColor = [UIColor clearColor];
+            
+            // Setup tint color,backgroup color
+            cell.tintColor = backgroundColor;
+            cell.contentView.backgroundColor = backgroundColor;
+            
             cell.textLabel.shadowOffset = CGSizeMake(0, 1);
             cell.textLabel.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
             return cell;
         }
     
     } else {
-
-//        static NSString *cellIdentifier = @"MyCell";
-//        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-//        if (cell == nil) {
-//            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-//
-//        }
         FQTodoHomeCell *cell = [FQTodoHomeCell TodoHomeCellWithTableView:self.tableView];
-        cell.textLabel.adjustsFontSizeToFitWidth = YES;
-        cell.textLabel.backgroundColor = [UIColor clearColor];
-        cell.textLabel.shadowOffset = CGSizeMake(0, 1);
-        cell.textLabel.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
+        //设置cell的默认底色
+        cell.contentView.backgroundColor = backgroundColor;
         
-        cell.textLabel.text = [NSString stringWithFormat:@"%@", (NSString *)object];
-        if ([object isEqual:DONE_CELL]) {
-            cell.textLabel.textColor = [UIColor grayColor];
-            cell.contentView.backgroundColor = [UIColor darkGrayColor];
-        } else if ([object isEqual:DUMMY_CELL]) {
-            cell.textLabel.text = @"";
-            cell.contentView.backgroundColor = [UIColor blackColor];
-        } else {
-            cell.textLabel.textColor = [UIColor whiteColor];
-            cell.contentView.backgroundColor = backgroundColor;
-        }
-        
+        //将obj赋给model.groupname
+        [group SetTypeByObj:(NSString *)object];
+        cell.groupModel = group;
 //        NSLog(@"%@, %@", NSStringFromCGRect(cell.frame), NSStringFromCGRect(cell.contentView.frame));
 //        NSLog(@"%ld", (long)self.tableView.style);
-        cell.groupModel = group;
+        
         return cell;
     }
 }
@@ -276,6 +328,7 @@
         cell.finishedHeight = NORMAL_CELL_FINISHING_HEIGHT;
         cell.imageView.image = nil;
         cell.textLabel.text = @"Just Added!";
+        [self.tableView reloadData];
     }
 }
 
