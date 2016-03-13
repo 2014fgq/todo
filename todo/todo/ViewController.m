@@ -10,7 +10,8 @@
 #import "JTTransformableTableViewCell.h"
 #import "JTTableViewGestureRecognizer.h"
 #import "UIColor+JTGestureBasedTableViewHelper.h"
-
+#import "UIColor+Hex.h"
+#import "FQTodoHomeCell.h"
 // Configure your viewController to conform to JTTableViewGestureEditingRowDelegate
 // and/or JTTableViewGestureAddingRowDelegate depends on your needs
 @interface ViewController () <JTTableViewGestureEditingRowDelegate, JTTableViewGestureAddingRowDelegate, JTTableViewGestureMoveRowDelegate>
@@ -67,13 +68,31 @@
 
 }
 
+- (NSMutableArray *)groups
+{
+    if(!_groups)
+    {
+        _groups = [self initwithrows:rows];
+    }
+    return _groups;
+}
+
+- (NSMutableArray *)initwithrows:(NSArray *)array
+{
+    NSMutableArray *_array = [[NSMutableArray alloc] init];
+    for (NSString *obj in array) {
+        FQGroup *_group = [FQGroup initwithdefaultrows:obj];
+        [_array addObject:_group];
+    }
+    return  _array;
+}
+
 #pragma mark fix the tablewview and navigationview
 - (void)tableview_navigationview_setup:(UIViewController *)viewcontroller
 {
     //由于是ios7以上才存在navigationview和tablewview之间留空的问题
     float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
     if (systemVersion >= 7.0) {
-        
         viewcontroller.edgesForExtendedLayout = UIRectEdgeNone;
         
     }
@@ -84,6 +103,13 @@
     //第二种方法，不行
     //viewcontroller.tableView.contentInset = UIEdgeInsetsMake(NORMAL_CELL_FINISHING_HEIGHT, 0, 0, 0);
     //viewcontroller.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(NORMAL_CELL_FINISHING_HEIGHT, 0, 0, 0);
+    //配置UINavigationController
+    self.navigationController.navigationBar.barTintColor =
+        [UIColor colorWithHex:0x222e3b];
+    //self.navigationController.navigationBar.backgroundColor = [UIColor blueColor];
+    
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     @{NSForegroundColorAttributeName:[UIColor whiteColor]}];
 }
 
 #pragma mark Private Method
@@ -116,7 +142,11 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     NSObject *object = [self.rows objectAtIndex:indexPath.row];
-    UIColor *backgroundColor = [[UIColor redColor] colorWithHueOffset:0.12 * indexPath.row / [self tableView:tableView numberOfRowsInSection:indexPath.section]];
+    self.groups = [self initwithrows:self.rows];
+    FQGroup *group = [self.groups objectAtIndex:indexPath.row];
+
+    //UIColor *backgroundColor = [[UIColor redColor] colorWithHueOffset:0.12 * indexPath.row / [self tableView:tableView numberOfRowsInSection:indexPath.section]];
+    UIColor *backgroundColor = [UIColor colorWithHex:0x2B3A4B];
     if ([object isEqual:ADDING_CELL]) {
         NSString *cellIdentifier = nil;
         JTTransformableTableViewCell *cell = nil;
@@ -133,24 +163,24 @@
                 cell.textLabel.textColor = [UIColor whiteColor];
             }
             
-            
             cell.finishedHeight = COMMITING_CREATE_CELL_HEIGHT;
-            if (cell.frame.size.height > COMMITING_CREATE_CELL_HEIGHT * 2) {
-                cell.imageView.image = [UIImage imageNamed:@"reload.png"];
-                cell.tintColor = [UIColor blackColor];
-                cell.textLabel.text = @"Return to list...";
-            } else if (cell.frame.size.height > COMMITING_CREATE_CELL_HEIGHT) {
+//            if (cell.frame.size.height > COMMITING_CREATE_CELL_HEIGHT * 2) {
+//                cell.imageView.image = [UIImage imageNamed:@"reload.png"];
+//                cell.tintColor = [UIColor blackColor];
+//                cell.textLabel.text = @"Return to list...";
+//            } else
+            if (cell.frame.size.height > COMMITING_CREATE_CELL_HEIGHT) {
                 cell.imageView.image = nil;
                 // Setup tint color
                 cell.tintColor = backgroundColor;
-                cell.textLabel.text = @"Release to create cell...";
+                cell.textLabel.text = @"⬆️ 释放新建列表";
             } else {
                 cell.imageView.image = nil;
                 // Setup tint color
                 cell.tintColor = backgroundColor;
-                cell.textLabel.text = @"Continue Pulling...";
+                cell.textLabel.text = @"⬇️ 下拉新建列表";
             }
-            cell.contentView.backgroundColor = [UIColor clearColor];
+            cell.contentView.backgroundColor = [UIColor blackColor];
             cell.textLabel.shadowOffset = CGSizeMake(0, 1);
             cell.textLabel.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
             return cell;
@@ -172,9 +202,9 @@
             
             cell.finishedHeight = COMMITING_CREATE_CELL_HEIGHT;
             if (cell.frame.size.height > COMMITING_CREATE_CELL_HEIGHT) {
-                cell.textLabel.text = @"Release to create cell...";
+                cell.textLabel.text = @"释放新建列表";
             } else {
-                cell.textLabel.text = @"Continue Pinching...";
+                cell.textLabel.text = @"请继续捏合";
             }
             cell.contentView.backgroundColor = [UIColor clearColor];
             cell.textLabel.shadowOffset = CGSizeMake(0, 1);
@@ -184,29 +214,33 @@
     
     } else {
 
-        static NSString *cellIdentifier = @"MyCell";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-            cell.textLabel.adjustsFontSizeToFitWidth = YES;
-            cell.textLabel.backgroundColor = [UIColor clearColor];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        }
-
+//        static NSString *cellIdentifier = @"MyCell";
+//        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//        if (cell == nil) {
+//            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+//
+//        }
+        FQTodoHomeCell *cell = [FQTodoHomeCell TodoHomeCellWithTableView:self.tableView];
+        cell.textLabel.adjustsFontSizeToFitWidth = YES;
+        cell.textLabel.backgroundColor = [UIColor clearColor];
+        cell.textLabel.shadowOffset = CGSizeMake(0, 1);
+        cell.textLabel.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
+        
         cell.textLabel.text = [NSString stringWithFormat:@"%@", (NSString *)object];
         if ([object isEqual:DONE_CELL]) {
             cell.textLabel.textColor = [UIColor grayColor];
             cell.contentView.backgroundColor = [UIColor darkGrayColor];
         } else if ([object isEqual:DUMMY_CELL]) {
             cell.textLabel.text = @"";
-            cell.contentView.backgroundColor = [UIColor clearColor];
+            cell.contentView.backgroundColor = [UIColor blackColor];
         } else {
             cell.textLabel.textColor = [UIColor whiteColor];
             cell.contentView.backgroundColor = backgroundColor;
         }
-        cell.textLabel.shadowOffset = CGSizeMake(0, 1);
-        cell.textLabel.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
         
+//        NSLog(@"%@, %@", NSStringFromCGRect(cell.frame), NSStringFromCGRect(cell.contentView.frame));
+//        NSLog(@"%ld", (long)self.tableView.style);
+        cell.groupModel = group;
         return cell;
     }
 }

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		88A019561C93E9F700AA0B85 /* FQTodoHomeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A019551C93E9F700AA0B85 /* FQTodoHomeCell.m */; };
+		88A019591C93F53600AA0B85 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A019581C93F53600AA0B85 /* UIColor+Hex.m */; };
+		88A0195D1C94112D00AA0B85 /* FQGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A0195C1C94112D00AA0B85 /* FQGroup.m */; };
+		88A019601C94119200AA0B85 /* FQTodo.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A0195F1C94119200AA0B85 /* FQTodo.m */; };
 		88D92CC71C93B9C600F57305 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D92CC61C93B9C600F57305 /* main.m */; };
 		88D92CCA1C93B9C600F57305 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D92CC91C93B9C600F57305 /* AppDelegate.m */; };
 		88D92CCD1C93B9C600F57305 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D92CCC1C93B9C600F57305 /* ViewController.m */; };
@@ -19,6 +23,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		88A019541C93E9F700AA0B85 /* FQTodoHomeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FQTodoHomeCell.h; sourceTree = "<group>"; };
+		88A019551C93E9F700AA0B85 /* FQTodoHomeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FQTodoHomeCell.m; sourceTree = "<group>"; };
+		88A019571C93F53600AA0B85 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Hex.h"; path = "todo/UIColor+Hex.h"; sourceTree = SOURCE_ROOT; };
+		88A019581C93F53600AA0B85 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Hex.m"; path = "todo/UIColor+Hex.m"; sourceTree = SOURCE_ROOT; };
+		88A0195B1C94112D00AA0B85 /* FQGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FQGroup.h; sourceTree = "<group>"; };
+		88A0195C1C94112D00AA0B85 /* FQGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FQGroup.m; sourceTree = "<group>"; };
+		88A0195E1C94119200AA0B85 /* FQTodo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FQTodo.h; sourceTree = "<group>"; };
+		88A0195F1C94119200AA0B85 /* FQTodo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FQTodo.m; sourceTree = "<group>"; };
 		88D92CC21C93B9C600F57305 /* todo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = todo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88D92CC61C93B9C600F57305 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		88D92CC81C93B9C600F57305 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -48,6 +60,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		88A0195A1C9410EC00AA0B85 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				88A0195B1C94112D00AA0B85 /* FQGroup.h */,
+				88A0195C1C94112D00AA0B85 /* FQGroup.m */,
+				88A0195E1C94119200AA0B85 /* FQTodo.h */,
+				88A0195F1C94119200AA0B85 /* FQTodo.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		88D92CB91C93B9C600F57305 = {
 			isa = PBXGroup;
 			children = (
@@ -67,6 +90,8 @@
 		88D92CC41C93B9C600F57305 /* todo */ = {
 			isa = PBXGroup;
 			children = (
+				88A019571C93F53600AA0B85 /* UIColor+Hex.h */,
+				88A019581C93F53600AA0B85 /* UIColor+Hex.m */,
 				88D92CDC1C93BB9800F57305 /* JTGestureBasedTableView */,
 				88D92CC81C93B9C600F57305 /* AppDelegate.h */,
 				88D92CC91C93B9C600F57305 /* AppDelegate.m */,
@@ -76,6 +101,8 @@
 				88D92CD11C93B9C600F57305 /* Assets.xcassets */,
 				88D92CD31C93B9C600F57305 /* LaunchScreen.storyboard */,
 				88D92CD61C93B9C600F57305 /* Info.plist */,
+				88EA1A731C947E9700EF2706 /* Views */,
+				88A0195A1C9410EC00AA0B85 /* Models */,
 				88D92CC51C93B9C600F57305 /* Supporting Files */,
 			);
 			path = todo;
@@ -100,6 +127,15 @@
 				88D92CE21C93BB9800F57305 /* UIColor+JTGestureBasedTableViewHelper.m */,
 			);
 			path = JTGestureBasedTableView;
+			sourceTree = "<group>";
+		};
+		88EA1A731C947E9700EF2706 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				88A019551C93E9F700AA0B85 /* FQTodoHomeCell.m */,
+				88A019541C93E9F700AA0B85 /* FQTodoHomeCell.h */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -174,11 +210,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				88D92CCD1C93B9C600F57305 /* ViewController.m in Sources */,
+				88A019591C93F53600AA0B85 /* UIColor+Hex.m in Sources */,
 				88D92CE31C93BB9800F57305 /* JTTableViewGestureRecognizer.m in Sources */,
 				88D92CCA1C93B9C600F57305 /* AppDelegate.m in Sources */,
+				88A019601C94119200AA0B85 /* FQTodo.m in Sources */,
+				88A019561C93E9F700AA0B85 /* FQTodoHomeCell.m in Sources */,
 				88D92CE41C93BB9800F57305 /* JTTransformableTableViewCell.m in Sources */,
 				88D92CC71C93B9C600F57305 /* main.m in Sources */,
 				88D92CE51C93BB9800F57305 /* UIColor+JTGestureBasedTableViewHelper.m in Sources */,
+				88A0195D1C94112D00AA0B85 /* FQGroup.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,6 +367,7 @@
 				88D92CDB1C93B9C600F57305 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
