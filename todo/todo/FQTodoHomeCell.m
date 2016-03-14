@@ -66,6 +66,7 @@
 {
     [super layoutSubviews];
     self.textfield.frame = self.bounds;
+    self.textfield.frame = CGRectMake(0, 0, 320, NORMAL_CELL_FINISHING_HEIGHT);
 }
 
 - (void)setGroupModel:(FQGroup *)groupModel
@@ -120,16 +121,19 @@
     
     switch (groupModel.type)
     {
+        //移动单元格的时候，清空textfield
         case GROUP_TYPE_DUMMY:
         {
-            self.textfield.textColor = [UIColor grayColor];
-            self.contentView.backgroundColor = [UIColor darkGrayColor];
+            self.textfield.text = @"";
+            self.label.frame = CGRectMake(0, 0, 0, 0);
+            self.contentView.backgroundColor = [UIColor blackColor];
             break;
         }
         case GROUP_TYPE_DONE:
         {
-            self.textfield.text = @"";
-            self.contentView.backgroundColor = [UIColor blackColor];
+            self.textfield.textColor = [UIColor grayColor];
+            self.contentView.backgroundColor = [UIColor darkGrayColor];
+
         }
         default:
             break;

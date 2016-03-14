@@ -569,7 +569,7 @@ CGFloat const JTTableViewRowAnimationDuration          = 0.25;       // Rough gu
     if ( ! [delegate conformsToProtocol:@protocol(JTTableViewGestureAddingRowDelegate)]
         && ! [delegate conformsToProtocol:@protocol(JTTableViewGestureEditingRowDelegate)]
         && ! [delegate conformsToProtocol:@protocol(JTTableViewGestureMoveRowDelegate)]) {
-        [NSException raise:@"delegate should at least conform to one of JTTableViewGestureAddingRowDelegate, JTTableViewGestureEditingRowDelegate or JTTableViewGestureMoveRowDelegate" format:nil];
+        [NSException raise:NSInternalInconsistencyException format:@"delegate should at least conform to one of JTTableViewGestureAddingRowDelegate, JTTableViewGestureEditingRowDelegate or JTTableViewGestureMoveRowDelegate"];
     }
     JTTableViewGestureRecognizer *recognizer = [JTTableViewGestureRecognizer gestureRecognizerWithTableView:self delegate:delegate];
     return recognizer;

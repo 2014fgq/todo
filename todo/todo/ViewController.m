@@ -40,15 +40,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // In this example, we setup self.rows as datasource
-    self.rows = [NSMutableArray arrayWithObjects:
-                 @"Swipe to the right to complete",
-                 @"Swipe to left to delete",
-                 @"Drag down to create a new cell",
-                 @"Pinch two rows apart to create cell",
-                 @"Long hold to start reorder cell",
-                 nil];
-
 
     // Setup your tableView.delegate and tableView.datasource,
     // then enable gesture recognition in one line.
@@ -80,11 +71,11 @@
 }
 
 #pragma mark - 键盘更改frame的时候，键盘弹出
+//不适用willshow,willhide,didshow,didhide方法，因为hide太慢了,为了对称，show都不使用了
 - (void)keyboardWillChangeFrame:(NSNotification*)notification
 {
-    NSLog(@"keyboardWillChangeFrame %f", [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y);
-
-    //不适用willshow,willhide,didshow,didhide方法，因为hide太慢了,为了对称，show都不使用了
+    //NSLog(@"keyboardWillChangeFrame %f", [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y);
+    
     //获取键盘弹入弹出时的位置
     CGFloat keyboardbefore = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y;
     CGFloat keyboardend = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].origin.y;
@@ -107,25 +98,11 @@
 
 - (void)keyboardWillDidShow:(NSNotification*)notification
 {
-    NSLog(@"tableview %f",
-          self.tableView.frame.origin.y);
-    NSInteger Idx = 3;
-    [UIView animateWithDuration:0.25 animations:^{
-        self.view.transform = CGAffineTransformMakeTranslation(0, -Idx * NORMAL_CELL_FINISHING_HEIGHT);
-    }];
-    NSLog(@"tableview %f",
-          self.tableView.frame.origin.y);
 }
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
-        NSLog(@"tableview %f",
-              self.tableView.frame.origin.y);
-    [UIView animateWithDuration:0.1 animations:^{
-        self.view.transform = CGAffineTransformMakeTranslation(0, 0);
-    }];
-    NSLog(@"tableview %f",
-          self.tableView.frame.origin.y);
+    //NSLog(@"keyboardWillChangeFrame %f", [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y);
 }
 
 #pragma mark - FQTodoHomeCellDelegate
@@ -140,22 +117,12 @@
 {
     if(!_groups)
     {
-        _groups = [self initwithrows:rows];
+        _groups = [FQGroup GroupsWithDefaultRows];
     }
     return _groups;
 }
 
-- (NSMutableArray *)initwithrows:(NSArray *)array
-{
-    NSMutableArray *_array = [[NSMutableArray alloc] init];
-    for (NSString *obj in array) {
-        FQGroup *_group = [FQGroup initwithdefaultrows:obj];
-        [_array addObject:_group];
-    }
-    return  _array;
-}
-
-#pragma mark fix the tablewview and navigationview
+#pragma mark - fix the tablewview and navigationview
 - (void)tableview_navigationview_setup:(UIViewController *)viewcontroller
 {
     //由于是ios7以上才存在navigationview和tablewview之间留空的问题
@@ -185,11 +152,11 @@
 - (void)moveRowToBottomForIndexPath:(NSIndexPath *)indexPath {
     [self.tableView beginUpdates];
     
-    id object = [self.rows objectAtIndex:indexPath.row];
-    [self.rows removeObjectAtIndex:indexPath.row];
-    [self.rows addObject:object];
+    id object = [self.groups objectAtIndex:indexPath.row];
+    [self.groups removeObjectAtIndex:indexPath.row];
+    [self.groups addObject:object];
 
-    NSIndexPath *lastIndexPath = [NSIndexPath indexPathForRow:[self.rows count] - 1 inSection:0];
+    NSIndexPath *lastIndexPath = [NSIndexPath indexPathForRow:[self.groups count] - 1 inSection:0];
     [self.tableView moveRowAtIndexPath:indexPath toIndexPath:lastIndexPath];
 
     [self.tableView endUpdates];
@@ -200,7 +167,7 @@
 #pragma mark UITableViewDatasource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.rows count];
+    return [self.groups count];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -208,10 +175,8 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    NSObject *object = [self.rows objectAtIndex:indexPath.row];
-    self.groups = [self initwithrows:self.rows];
     FQGroup *group = [self.groups objectAtIndex:indexPath.row];
+    NSString *object = group.groupname;
 
     //UIColor *backgroundColor = [[UIColor redColor] colorWithHueOffset:0.12 * indexPath.row / [self tableView:tableView numberOfRowsInSection:indexPath.section]];
     UIColor *backgroundColor = [UIColor colorWithHex:0x2B3A4B];
@@ -316,29 +281,25 @@
 #pragma mark JTTableViewGestureAddingRowDelegate
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsAddRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.rows insertObject:ADDING_CELL atIndex:indexPath.row];
+    FQGroup *_group = [FQGroup initwithdefaultobj:ADDING_CELL];
+    [self.groups insertObject:_group atIndex:indexPath.row];
 }
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsCommitRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.rows replaceObjectAtIndex:indexPath.row withObject:@"Added!"];
+    
+    FQGroup *_group = [FQGroup initwithdefaultobj:@"Added!"];
+    [self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
+    
     JTTransformableTableViewCell *cell = (id)[gestureRecognizer.tableView cellForRowAtIndexPath:indexPath];
 
-    BOOL isFirstCell = indexPath.section == 0 && indexPath.row == 0;
-    if (isFirstCell && cell.frame.size.height > COMMITING_CREATE_CELL_HEIGHT * 2) {
-        [self.rows removeObjectAtIndex:indexPath.row];
-        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationMiddle];
-        // Return to list
-    }
-    else {
-        cell.finishedHeight = NORMAL_CELL_FINISHING_HEIGHT;
-        cell.imageView.image = nil;
-        cell.textLabel.text = @"Just Added!";
-        [self.tableView reloadData];
-    }
+    cell.finishedHeight = NORMAL_CELL_FINISHING_HEIGHT;
+    cell.imageView.image = nil;
+    cell.textLabel.text = @"Just Added!";
+    [self.tableView reloadData];
 }
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsDiscardRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.rows removeObjectAtIndex:indexPath.row];
+    [self.groups removeObjectAtIndex:indexPath.row];
 }
 
 // Uncomment to following code to disable pinch in to create cell gesture
@@ -370,6 +331,9 @@
     if ([cell isKindOfClass:[JTTransformableTableViewCell class]]) {
         ((JTTransformableTableViewCell *)cell).tintColor = backgroundColor;
     }
+    else if([cell isKindOfClass:[FQTodoHomeCell class]]) {
+        ((FQTodoHomeCell *)cell).tintColor = backgroundColor;
+    }
 }
 
 // This is needed to be implemented to let our delegate choose whether the panning gesture should work
@@ -380,17 +344,18 @@
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer commitEditingState:(JTTableViewCellEditingState)state forRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableView *tableView = gestureRecognizer.tableView;
     
-    
     NSIndexPath *rowToBeMovedToBottom = nil;
 
     [tableView beginUpdates];
     if (state == JTTableViewCellEditingStateLeft) {
         // An example to discard the cell at JTTableViewCellEditingStateLeft
-        [self.rows removeObjectAtIndex:indexPath.row];
+        [self.groups removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
     } else if (state == JTTableViewCellEditingStateRight) {
         // An example to retain the cell at commiting at JTTableViewCellEditingStateRight
-        [self.rows replaceObjectAtIndex:indexPath.row withObject:DONE_CELL];
+        FQGroup *_group = [FQGroup initwithdefaultobj:DONE_CELL];
+        [self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
+        
         [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         rowToBeMovedToBottom = indexPath;
     } else {
@@ -398,7 +363,6 @@
         // - [JTTableViewGestureDelegate gestureRecognizer:commitEditingState:forRowAtIndexPath:]
     }
     [tableView endUpdates];
-
 
     // Row color needs update after datasource changes, reload it.
     [tableView performSelector:@selector(reloadVisibleRowsExceptIndexPath:) withObject:indexPath afterDelay:JTTableViewRowAnimationDuration];
@@ -415,18 +379,19 @@
 }
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsCreatePlaceholderForRowAtIndexPath:(NSIndexPath *)indexPath {
-    self.grabbedObject = [self.rows objectAtIndex:indexPath.row];
-    [self.rows replaceObjectAtIndex:indexPath.row withObject:DUMMY_CELL];
+    self.grabbedObject = [self.groups objectAtIndex:indexPath.row];
+    FQGroup *_group = [FQGroup initwithdefaultobj:DUMMY_CELL];
+    [self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
 }
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsMoveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
-    id object = [self.rows objectAtIndex:sourceIndexPath.row];
-    [self.rows removeObjectAtIndex:sourceIndexPath.row];
-    [self.rows insertObject:object atIndex:destinationIndexPath.row];
+    id object = [self.groups objectAtIndex:sourceIndexPath.row];
+    [self.groups removeObjectAtIndex:sourceIndexPath.row];
+    [self.groups insertObject:object atIndex:destinationIndexPath.row];
 }
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsReplacePlaceholderForRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.rows replaceObjectAtIndex:indexPath.row withObject:self.grabbedObject];
+    [self.groups replaceObjectAtIndex:indexPath.row withObject:self.grabbedObject];
     self.grabbedObject = nil;
 }
 

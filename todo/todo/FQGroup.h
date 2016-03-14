@@ -26,5 +26,6 @@ typedef enum {
 - (void)groupWithDict;
 - (void)removeNameAtIdx:(NSInteger)Idx;
 - (void)SetTypeByObj:(NSString *)obj;
-+ (instancetype)initwithdefaultrows:(NSString *)obj;
++ (instancetype)initwithdefaultobj:(NSString *)obj;
++ (NSMutableArray *)GroupsWithDefaultRows;
 @end
