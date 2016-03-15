@@ -10,10 +10,22 @@
 
 @implementation FQGroup
 #pragma mark - Inif Default
-+ (instancetype)initwithdefaultobj:(NSString *)obj
++(instancetype)initwithdefaultobj:(NSString *)obj
 {
     FQGroup *_group = [[FQGroup alloc] init];
     _group.groupname = obj;
+    _group.type = 0;
+    _group.todoOK = 0;
+    _group.todoAll = 0;
+    _group.IsFinish = false;
+    return _group;
+}
+
++(instancetype)initwithObj:(NSString *)obj withType:(NSInteger)type
+{
+    FQGroup *_group = [[FQGroup alloc] init];
+    _group.groupname = obj;
+    _group.type = type;
     _group.todoOK = 0;
     _group.todoAll = 0;
     _group.IsFinish = false;

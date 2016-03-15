@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "FQGroup.h"
 @interface ViewController : UITableViewController
 @property (strong, nonatomic) NSMutableArray *groups;
 #define ADDING_CELL @"Continue..."

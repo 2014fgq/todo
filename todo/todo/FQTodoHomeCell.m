@@ -67,6 +67,13 @@
     [super layoutSubviews];
     self.textfield.frame = self.bounds;
     self.textfield.frame = CGRectMake(0, 0, 320, NORMAL_CELL_FINISHING_HEIGHT);
+    if(self.groupModel.type == GROUP_TYPE_ADDED_CELL)
+    {
+        //确保textfield已经被加载可见，可以成为第一焦点
+        self.textfield.text = @"";
+        self.groupModel.type = GROUP_TYPE_NORMAL;
+        [self.textfield becomeFirstResponder];
+    }
 }
 
 - (void)setGroupModel:(FQGroup *)groupModel
@@ -133,7 +140,6 @@
         {
             self.textfield.textColor = [UIColor grayColor];
             self.contentView.backgroundColor = [UIColor darkGrayColor];
-
         }
         default:
             break;
@@ -210,9 +216,18 @@
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
     NSLog(@"textFieldDidEndEditing");
+    //输入结束，记录输入结果，并保存到Model
+    _groupModel.groupname = textField.text;
     //textfield输入完毕时，键盘收回，调用tableview下滚
     if([self.delegate respondsToSelector:@selector(ScrollDownWithIdxPath:)])
         [self.delegate ScrollDownWithIdxPath:self.IdxPath];
+    
+    if ([textField.text isEqualToString:@""]) {
+        if([self.delegate respondsToSelector:@selector(needsDiscardRowAtIdxPath:)])
+        {
+            [self.delegate needsDiscardRowAtIdxPath:self.IdxPath];
+        }
+    }
     //输入结束，记录输入结果，并保存到Model
     _groupModel.groupname = textField.text;
 }

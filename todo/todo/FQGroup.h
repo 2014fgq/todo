@@ -13,7 +13,9 @@ typedef enum {
     GROUP_TYPE_DUMMY      = 1,
     GROUP_TYPE_DONE       = 2,
     GROUP_TYPE_PINCH_ON   = 3,
-    GROUP_TYPE_PINCH_OK   = 4
+    GROUP_TYPE_PINCH_OK   = 4,
+    GROUP_TYPE_ADDING_CELL = 5,
+    GROUP_TYPE_ADDED_CELL = 6
 }GROUPTYPE;
 
 @interface FQGroup : NSObject
@@ -27,5 +29,6 @@ typedef enum {
 - (void)removeNameAtIdx:(NSInteger)Idx;
 - (void)SetTypeByObj:(NSString *)obj;
 + (instancetype)initwithdefaultobj:(NSString *)obj;
++(instancetype)initwithObj:(NSString *)obj withType:(NSInteger)type;
 + (NSMutableArray *)GroupsWithDefaultRows;
 @end

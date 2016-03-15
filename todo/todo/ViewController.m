@@ -131,6 +131,13 @@
     [UIView animateWithDuration:0.25 animations:^{
         self.view.transform = CGAffineTransformMakeTranslation(0, scroll);
     }];
+    
+}
+
+- (void)needsDiscardRowAtIdxPath:(NSIndexPath *)IdxPath{
+    [self.groups removeObjectAtIndex:IdxPath.row];
+    [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:IdxPath] withRowAnimation:UITableViewRowAnimationLeft];
+    //[self.tableView reloadData];
 }
 #pragma mark - 懒加载
 - (NSMutableArray *)groups
@@ -196,11 +203,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     FQGroup *group = [self.groups objectAtIndex:indexPath.row];
-    NSString *object = group.groupname;
+    //NSString *object = group.groupname;
 
     //UIColor *backgroundColor = [[UIColor redColor] colorWithHueOffset:0.12 * indexPath.row / [self tableView:tableView numberOfRowsInSection:indexPath.section]];
     UIColor *backgroundColor = [UIColor colorWithHex:0x2B3A4B];
-    if ([object isEqual:ADDING_CELL]) {
+    if (group.type == GROUP_TYPE_ADDING_CELL) {
         NSString *cellIdentifier = nil;
         JTTransformableTableViewCell *cell = nil;
 
@@ -278,7 +285,7 @@
         cell.delegate = self;
         
         //将obj赋给model.groupname
-        [group SetTypeByObj:(NSString *)object];
+        //[group SetTypeByObj:(NSString *)object];
         cell.groupModel = group;
 //        NSLog(@"%@, %@", NSStringFromCGRect(cell.frame), NSStringFromCGRect(cell.contentView.frame));
 //        NSLog(@"%ld", (long)self.tableView.style);
@@ -297,24 +304,25 @@
     NSLog(@"tableView:didSelectRowAtIndexPath: %@", indexPath);
 }
 
-#pragma mark -
-#pragma mark JTTableViewGestureAddingRowDelegate
+#pragma mark - JTTableViewGestureAddingRowDelegate
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsAddRowAtIndexPath:(NSIndexPath *)indexPath {
-    FQGroup *_group = [FQGroup initwithdefaultobj:ADDING_CELL];
+    FQGroup *_group = [FQGroup initwithObj:ADDING_CELL withType:GROUP_TYPE_ADDING_CELL];
     [self.groups insertObject:_group atIndex:indexPath.row];
 }
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsCommitRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    FQGroup *_group = [FQGroup initwithdefaultobj:@"Added!"];
+    //UITextField *textfield = [[UITextField alloc]initWithFrame:CGRectMake(0,250, 320, 60)];
+    //[self.tableView addSubview:textfield];
+    //[textfield becomeFirstResponder];
+    FQGroup *_group = [FQGroup initwithObj:@"Added!" withType:GROUP_TYPE_ADDED_CELL];
     [self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
     
-    JTTransformableTableViewCell *cell = (id)[gestureRecognizer.tableView cellForRowAtIndexPath:indexPath];
+    UITableViewCell *cell = (id)[gestureRecognizer.tableView cellForRowAtIndexPath:indexPath];
+    if ([cell isKindOfClass:([JTTransformableTableViewCell class])]) {
+        ((JTTransformableTableViewCell *)cell).finishedHeight = NORMAL_CELL_FINISHING_HEIGHT;
+    }
 
-    cell.finishedHeight = NORMAL_CELL_FINISHING_HEIGHT;
-    cell.imageView.image = nil;
-    cell.textLabel.text = @"Just Added!";
     [self.tableView reloadData];
 }
 
@@ -373,8 +381,9 @@
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
     } else if (state == JTTableViewCellEditingStateRight) {
         // An example to retain the cell at commiting at JTTableViewCellEditingStateRight
-        FQGroup *_group = [FQGroup initwithdefaultobj:DONE_CELL];
-        [self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
+        FQGroup *_group = [self.groups objectAtIndex:indexPath.row];
+        _group.type = GROUP_TYPE_DONE;
+        //[self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
         
         [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         rowToBeMovedToBottom = indexPath;
@@ -400,7 +409,7 @@
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsCreatePlaceholderForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.grabbedObject = [self.groups objectAtIndex:indexPath.row];
-    FQGroup *_group = [FQGroup initwithdefaultobj:DUMMY_CELL];
+    FQGroup *_group = [FQGroup initwithObj:DUMMY_CELL withType:GROUP_TYPE_DUMMY];
     [self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
 }
 

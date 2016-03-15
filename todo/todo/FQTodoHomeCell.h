@@ -27,7 +27,8 @@
 @end
 
 @protocol FQTodoHomeCellDelegate <NSObject>
-- (void) SetCurCellByIdxPath:(NSIndexPath *)IdxPath;
+- (void)SetCurCellByIdxPath:(NSIndexPath *)IdxPath;
 - (void)ScrollUpWithIdxPath:(NSIndexPath *)IdxPath;
 - (void)ScrollDownWithIdxPath:(NSIndexPath *)IdxPath;
+- (void)needsDiscardRowAtIdxPath:(NSIndexPath *)IdxPath;
 @end
