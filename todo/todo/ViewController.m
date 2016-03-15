@@ -12,7 +12,7 @@
 #import "UIColor+JTGestureBasedTableViewHelper.h"
 #import "UIColor+Hex.h"
 #import "FQTodoHomeCell.h"
-#import "FQGroup.h"
+
 // Configure your viewController to conform to JTTableViewGestureEditingRowDelegate
 // and/or JTTableViewGestureAddingRowDelegate depends on your needs
 @interface ViewController () <JTTableViewGestureEditingRowDelegate, JTTableViewGestureAddingRowDelegate, JTTableViewGestureMoveRowDelegate, FQTodoHomeCellDelegate>
@@ -51,7 +51,7 @@
     
     self.title = @"Todo";
     [self tableview_navigationview_setup:self];
-    [self install_keyboardNoti];
+    //[self install_keyboardNoti];
 }
 
 #pragma mark - 监听键盘
@@ -112,6 +112,26 @@
     self.IdxPath = IdxPath;
 }
 
+- (void)ScrollUpWithIdxPath:(NSIndexPath *)IdxPath
+{
+    //计算滚动量，滚动量=-(cell高*当前cell的Idx - tableview已经向上滚的滚动量)
+    NSInteger scroll = self.tableView.contentOffset.y-NORMAL_CELL_FINISHING_HEIGHT*IdxPath.row;
+    NSLog(@"table=%@, navi=%@, contest=%f",
+          NSStringFromCGRect(self.tableView.frame), NSStringFromCGRect(self.navigationController.navigationBar.frame), self.tableView.contentOffset.y);
+    //动画展示键盘弹入
+    [UIView animateWithDuration:0.25 animations:^{
+        self.view.transform = CGAffineTransformMakeTranslation(0, scroll);
+    }];
+}
+
+-(void)ScrollDownWithIdxPath:(NSIndexPath *)IdxPath
+{
+    NSInteger scroll = 0;
+    //动画展示键盘弹入弹出
+    [UIView animateWithDuration:0.25 animations:^{
+        self.view.transform = CGAffineTransformMakeTranslation(0, scroll);
+    }];
+}
 #pragma mark - 懒加载
 - (NSMutableArray *)groups
 {

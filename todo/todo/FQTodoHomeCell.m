@@ -202,11 +202,19 @@
     //当开始点击textfield的时候，光标进入，有且只有触发一次,调用代理，告诉当前点击的textfield。
     if([self.delegate respondsToSelector:@selector(SetCurCellByIdxPath:)])
         [self.delegate SetCurCellByIdxPath:self.IdxPath];
+    //textfield输入时，键盘弹出，调用tableview上滚
+    if([self.delegate respondsToSelector:@selector(ScrollUpWithIdxPath:)])
+        [self.delegate ScrollUpWithIdxPath:self.IdxPath];
     
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
     NSLog(@"textFieldDidEndEditing");
+    //textfield输入完毕时，键盘收回，调用tableview下滚
+    if([self.delegate respondsToSelector:@selector(ScrollDownWithIdxPath:)])
+        [self.delegate ScrollDownWithIdxPath:self.IdxPath];
+    //输入结束，记录输入结果，并保存到Model
+    _groupModel.groupname = textField.text;
 }
 /*
  [self configurecellinfo:cell forRowAtIndexPath:indexPath];

@@ -11,6 +11,7 @@
 //#import "MCSwipeTableViewCell.h"
 //@interface FQTodoHomeCell : MCSwipeTableViewCell
 #import "UIColor+Hex.h"
+@class FQGroup;
 @protocol FQTodoHomeCellDelegate;
 
 @interface FQTodoHomeCell : UITableViewCell <UITextFieldDelegate>
@@ -27,4 +28,6 @@
 
 @protocol FQTodoHomeCellDelegate <NSObject>
 - (void) SetCurCellByIdxPath:(NSIndexPath *)IdxPath;
+- (void)ScrollUpWithIdxPath:(NSIndexPath *)IdxPath;
+- (void)ScrollDownWithIdxPath:(NSIndexPath *)IdxPath;
 @end
