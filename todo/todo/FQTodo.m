@@ -9,13 +9,18 @@
 #import "FQTodo.h"
 
 @implementation FQTodo
-- (void) initWithDict
+#pragma mark - 懒加载
+- (instancetype)initWithDict:(NSDictionary *)dict
 {
-    
+    if(self = [super init])
+    {
+        [self setValuesForKeysWithDictionary:dict];
+    }
+    return self;
 }
-- (void) todoWithDict
++ (instancetype)TodoWithDict:(NSDictionary *)dict
 {
-    
+    return [[self alloc] initWithDict:dict];
 }
 @end
 

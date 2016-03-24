@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Header.h"
 #import "FQGroup.h"
 @interface ViewController : UITableViewController
 @property (strong, nonatomic) NSMutableArray *groups;
@@ -15,5 +16,6 @@
 #define DUMMY_CELL @"Dummy"
 #define COMMITING_CREATE_CELL_HEIGHT 60
 #define NORMAL_CELL_FINISHING_HEIGHT 60
+- (void)writedataback;
 @end
 

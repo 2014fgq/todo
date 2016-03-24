@@ -51,39 +51,122 @@
     return  _array;
 }
 
-#pragma mark - Set
-- (void)SetTypeByObj:(NSString *)obj
+#pragma mark - 懒加载
+- (instancetype)initWithDict:(NSDictionary *)dict
 {
-    if([obj isEqual:DONE_CELL])
-        self.type = GROUP_TYPE_DONE;
-    else if ([obj isEqual:DUMMY_CELL])
-        self.type = GROUP_TYPE_DUMMY;
-    else
-        self.type = GROUP_TYPE_NORMAL;
+    if(self = [super init])
+    {
+        //[self setValuesForKeysWithDictionary:dict];
+        self.groupname = [dict valueForKey:@"GROUPNAME"];
+        self.type = [[dict valueForKey:@"TYPE"] intValue];
+        self.todoOK = [[dict valueForKey:@"TODOOK"] intValue];
+        self.todoAll = [[dict valueForKey:@"TODOALL"] intValue];
+        self.IsFinish = [[dict valueForKey:@"ISFINISH"] intValue];
+    }
+    return self;
+}
++ (instancetype)groupWithDict:(NSDictionary *)dict
+{
+    return [[self alloc] initWithDict:dict];
 }
 
-- (void)initWithDict
+#pragma mark - Model to dict
++ (NSDictionary *)DictWithModel:(FQGroup *)model
 {
+//    NSDictionary* dict = [NSDictionary
+//                          dictionaryWithObjects:@[
+//                            model.ID,
+//                            model.groupname]
+//                            //[NSNumber numberWithInteger:model.type],
+//                            //[NSNumber numberWithInteger:model.IsFinish],
+//                            //[NSNumber numberWithInteger:model.todoOK],
+//                            //[NSNumber numberWithInteger:model.todoAll]]
+//                          forKeys:@[@"ID",@"GROUPNAME"]];//]@"TYPE", @"ISFINISH", @"TODOOK", @"TODOALL"]];
     
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    //[dict setValue:model.ID forKey:@"ID"];
+    [dict setValue:model.groupname forKey:@"GROUPNAME"];
+    [dict setValue:[NSNumber numberWithInteger:model.type] forKey:@"TYPE"];
+    [dict setValue:[NSNumber numberWithInteger:model.IsFinish] forKey:@"ISFINISH"];
+    [dict setValue:[NSNumber numberWithInteger:model.todoOK] forKey:@"TODOOK"];
+    [dict setValue:[NSNumber numberWithInteger:model.todoAll] forKey:@"TODOALL"];
+    
+    //NSLog(@"%@", dict);
+    return  dict;
 }
-- (void)groupWithDict
+@end
+
+#if 0
+@implementation FQGroupBL
+static FQGroupBL *sharedManager = nil;
+#define DB_NAME @"todo.db"
+#define DB_TABLE_HOME @"todo_home"
+
+//+ (FQGroupBL *)sharedManager
+//{
+//    if(!_store)
+//    {
+//        _sharedManager = [[YTKKeyValueStore alloc] init];
+//    }
+//    static dispatch_once_t once;
+//    dispatch_once(&once, ^{
+//        sharedManager = [[self alloc] init];
+//    });
+//    return sharedManager;
+//}
+
+- (YTKKeyValueStore *)store
 {
-    
+    if(!_store)
+    {
+        _store = [[YTKKeyValueStore alloc] initDBWithName:DB_NAME];
+        [_store createTableWithName:DB_TABLE_HOME];
+        NSLog(@"%@", _store);
+    }
+    return _store;
 }
 
 #pragma mark - create
-#pragma mark - updat
-#pragma mark - delete
+- (void)create:(FQGroup *)model
+{
+    NSString *ID = [NSString stringWithFormat:@"abc%ld", (long)model.ID.row];
+    [_store putObject:model withId:ID intoTable:DB_TABLE_HOME];
+}
+#pragma mark - update
+- (void)update:(FQGroup *)model
+{
+    NSString *ID = [NSString stringWithFormat:@"%ld", (long)model.ID.row];
+    [_store putObject:(id)model withId:ID intoTable:DB_TABLE_HOME];
+}
 
-#pragma mark - remove
-- (void)removeNameAtIdx:(NSInteger)Idx
+#pragma mark - delete
+- (void)delete:(FQGroup  *)model
+{
+    NSString *ID = [NSString stringWithFormat:@"%ld", (long)model.ID.row];
+    [_store deleteObjectById:ID fromTable:DB_TABLE_HOME];
+}
+
++ (void)deleteNameAtIdx:(NSInteger)Idx
 {
     [self removeKey:@"groupname" AtIdx:Idx];
 }
 
-- (void)removeKey:(NSString *)key AtIdx:(NSInteger)Idx
++ (void)removeKey:(NSString *)key AtIdx:(NSInteger)Idx
 {
     
 }
+#pragma mark - read
+-(FQGroup *)read:(FQGroup *)model
+{
+    NSString *ID = [NSString stringWithFormat:@"abc%ld", (long)model.ID.row];
+    return (FQGroup *)[self.store getObjectById:ID fromTable:DB_NAME];
+}
+
+-(NSArray *)findAll
+{
+    NSArray *array = [self.store getAllItemsFromTable:DB_TABLE_HOME];
+    return array;
+}
 
 @end
+#endif

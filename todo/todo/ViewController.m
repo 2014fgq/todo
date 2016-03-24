@@ -12,14 +12,15 @@
 #import "UIColor+JTGestureBasedTableViewHelper.h"
 #import "UIColor+Hex.h"
 #import "FQTodoHomeCell.h"
-
+#import "FQGroupBL+PLIST.h"
 // Configure your viewController to conform to JTTableViewGestureEditingRowDelegate
 // and/or JTTableViewGestureAddingRowDelegate depends on your needs
-@interface ViewController () <JTTableViewGestureEditingRowDelegate, JTTableViewGestureAddingRowDelegate, JTTableViewGestureMoveRowDelegate, FQTodoHomeCellDelegate>
+@interface ViewController () <JTTableViewGestureAddingRowDelegate, JTTableViewGestureMoveRowDelegate, JTTableViewGestureEditingRowDelegate, FQTodoHomeCellDelegate>//
 @property (nonatomic, strong) NSMutableArray *rows;
 @property (nonatomic, strong) JTTableViewGestureRecognizer *tableViewRecognizer;
 @property (nonatomic, strong) id grabbedObject;
 @property (nonatomic, strong) NSIndexPath *IdxPath;
+@property (strong, nonatomic) FQGroupBL *bl;
 - (void)moveRowToBottomForIndexPath:(NSIndexPath *)indexPath;
 
 @end
@@ -52,6 +53,28 @@
     self.title = @"Todo";
     [self tableview_navigationview_setup:self];
     //[self install_keyboardNoti];
+    NSLog(@"viewDidLoad Is Finish!");
+}
+
+- (void)didReceiveMemoryWarning
+{
+    NSLog(@"didReceiveMemoryWarning");
+}
+
+- (void)dealloc {
+    NSLog(@"dealloc");
+    
+//    for (FQGroup *_group in self.groups) {
+//        NSLog(@"%@", _group.isf);
+//    }
+}
+
+- (void)writedataback
+{
+    for (FQGroup *_group in self.groups) {
+        NSLog(@"%@", _group);
+        //[_bl update:_group];
+    }
 }
 
 #pragma mark - 监听键盘
@@ -114,14 +137,28 @@
 
 - (void)ScrollUpWithIdxPath:(NSIndexPath *)IdxPath
 {
+    //[self.tableView addSubview:_windowsview];
     //计算滚动量，滚动量=-(cell高*当前cell的Idx - tableview已经向上滚的滚动量)
     NSInteger scroll = self.tableView.contentOffset.y-NORMAL_CELL_FINISHING_HEIGHT*IdxPath.row;
-    NSLog(@"table=%@, navi=%@, contest=%f",
-          NSStringFromCGRect(self.tableView.frame), NSStringFromCGRect(self.navigationController.navigationBar.frame), self.tableView.contentOffset.y);
+    NSLog(@"table=%@, navi=%@, contest=%f, Idx=%ld",
+          NSStringFromCGRect(self.tableView.frame), NSStringFromCGRect(self.navigationController.navigationBar.frame), self.tableView.contentOffset.y, IdxPath.row);
     //动画展示键盘弹入
     [UIView animateWithDuration:0.25 animations:^{
         self.view.transform = CGAffineTransformMakeTranslation(0, scroll);
     }];
+    UITableViewCell *editingCell = [self.tableView cellForRowAtIndexPath:IdxPath];
+//    float _editingOffset = self.tableView.contentOffset.y - editingCell.frame.origin.y;
+//    
+    for(UITableViewCell* cell in [self.tableView visibleCells])
+    {
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             if (cell != editingCell) {
+                                 cell.alpha = 0.3;
+                             }
+                         }];
+    }
+    NSLog(@"Begin to Edit! %lu", (unsigned long)[self.bl findAll].count);
 }
 
 -(void)ScrollDownWithIdxPath:(NSIndexPath *)IdxPath
@@ -131,22 +168,104 @@
     [UIView animateWithDuration:0.25 animations:^{
         self.view.transform = CGAffineTransformMakeTranslation(0, scroll);
     }];
+    for(FQTodoHomeCell* cell in [self.tableView visibleCells])
+    {
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             cell.alpha = 1;
+                         }];
+    }
     
+    [self.bl writewithArray:self.groups];
+    //FQTodoHomeCell *cell = [self.tableView cellForRowAtIndexPath:IdxPath];
+    //if([cell isKindOfClass:[FQGroup class]])
+        //[self.bl replacewithmodel:cell.groupModel atIdx:IdxPath.row];
+
+    NSLog(@"End to Edit! count is %lu", (unsigned long)[self.bl findAll].count);
 }
 
+//如果textfield获取的数据为空，清空数据，重新计算Indexpath，不然所有cell的IndexPath.row会增加1
 - (void)needsDiscardRowAtIdxPath:(NSIndexPath *)IdxPath{
+    //重算cell.groupModel.ID,先重算Index,再删除cell，因为动画效果很差
+    NSIndexPath *IndexPath = IdxPath;
+    NSIndexPath *IndexPath_tmp = IndexPath;
+    [self.tableView reloadData];
+    for(FQTodoHomeCell* cell in [self.tableView visibleCells])
+    {
+        //判断是否为FQToDoHomeCell
+        if([cell isKindOfClass:[FQTodoHomeCell class]])
+        {
+            IndexPath_tmp = cell.groupModel.ID;
+            cell.groupModel.ID = IndexPath;
+            IndexPath = IndexPath_tmp;
+        }
+    }
+    
+    //清空Model和tableview的数据
     [self.groups removeObjectAtIndex:IdxPath.row];
+    [self.bl remove:nil atIdx:IdxPath.row];
     [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:IdxPath] withRowAnimation:UITableViewRowAnimationLeft];
-    //[self.tableView reloadData];
+    NSLog(@"End to Edit! cell %ld text is Null!", IndexPath.row);
 }
 #pragma mark - 懒加载
 - (NSMutableArray *)groups
 {
+    if(!_bl)
+    {
+        _bl = [FQGroupBL sharedManager];
+    }
     if(!_groups)
     {
-        _groups = [FQGroup GroupsWithDefaultRows];
+        _groups = [_bl findAll];
+        if (_groups.count == 0) {
+            _groups = [FQGroup GroupsWithDefaultRows];
+        }
+        _groups = [self sortByIsFinish:_groups];
+        NSLog(@"lazy Ok! load counts %ld", _groups.count);
     }
+    
     return _groups;
+}
+
+- (NSMutableArray *) sortByIsFinish:(NSArray *)array
+{
+    CHECK_NULLPOINTER(array)
+    NSMutableArray *finisharray = [NSMutableArray array];
+    NSMutableArray *notfinisharray = [NSMutableArray array];
+    for (FQGroup *group in array) {
+        if(group.IsFinish)
+        {
+            [finisharray addObject:group];
+        }
+        else
+        {
+            [notfinisharray addObject:group];
+        }
+    }
+    NSLog(@"Finish %ld -- UnFinish %ld", finisharray.count, notfinisharray.count);
+    [notfinisharray addObjectsFromArray:finisharray];
+    return notfinisharray;
+}
+
+- (NSInteger)GetLastUnFinish
+{
+    NSInteger Idx = 0;
+    //先进行排序
+    self.groups = [self sortByIsFinish:self.groups];
+    
+    //获取
+    for (FQGroup *group in self.groups) {
+        if(group.IsFinish)
+        {
+            break;
+        }
+        else
+        {
+            Idx++;
+        }
+    }
+    
+    return Idx;
 }
 
 #pragma mark - fix the tablewview and navigationview
@@ -177,18 +296,32 @@
 #pragma mark Private Method
 
 - (void)moveRowToBottomForIndexPath:(NSIndexPath *)indexPath {
+//    id object = [self.groups objectAtIndex:indexPath.row];
+//    [self.groups removeObjectAtIndex:indexPath.row];
+//    [self.groups addObject:object];
+    NSIndexPath *desIndexPath = nil;
+    FQGroup *group = [self.groups objectAtIndex:indexPath.row];
+    
+    if (group.IsFinish) {
+        [self.groups removeObjectAtIndex:indexPath.row];
+        [self.groups addObject:group];
+        desIndexPath = [NSIndexPath indexPathForRow:[self.groups count] - 1 inSection:0];
+    }
+    else
+    {
+        desIndexPath = [NSIndexPath indexPathForRow:[self GetLastUnFinish]-1 inSection:0];
+    }
+
+    [self.bl writewithArray:self.groups];
+    NSLog(@"moveRowToBottomForIndexPath move %ld to %ld", indexPath.row, desIndexPath.row);
+    
     [self.tableView beginUpdates];
     
-    id object = [self.groups objectAtIndex:indexPath.row];
-    [self.groups removeObjectAtIndex:indexPath.row];
-    [self.groups addObject:object];
-
-    NSIndexPath *lastIndexPath = [NSIndexPath indexPathForRow:[self.groups count] - 1 inSection:0];
-    [self.tableView moveRowAtIndexPath:indexPath toIndexPath:lastIndexPath];
+    [self.tableView moveRowAtIndexPath:indexPath toIndexPath:desIndexPath];
 
     [self.tableView endUpdates];
 
-    [self.tableView performSelector:@selector(reloadVisibleRowsExceptIndexPath:) withObject:lastIndexPath afterDelay:JTTableViewRowAnimationDuration];
+    //[self.tableView performSelector:@selector(reloadVisibleRowsExceptIndexPath:) withObject:lastIndexPath afterDelay:JTTableViewRowAnimationDuration];
 }
 
 #pragma mark UITableViewDatasource
@@ -203,9 +336,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     FQGroup *group = [self.groups objectAtIndex:indexPath.row];
-    //NSString *object = group.groupname;
-
     //UIColor *backgroundColor = [[UIColor redColor] colorWithHueOffset:0.12 * indexPath.row / [self tableView:tableView numberOfRowsInSection:indexPath.section]];
+    
     UIColor *backgroundColor = [UIColor colorWithHex:0x2B3A4B];
     if (group.type == GROUP_TYPE_ADDING_CELL) {
         NSString *cellIdentifier = nil;
@@ -279,7 +411,7 @@
         cell.contentView.backgroundColor = backgroundColor;
         
         //记录tap
-        cell.IdxPath = indexPath;
+        group.ID = indexPath;
         
         //设置delegate
         cell.delegate = self;
@@ -287,8 +419,7 @@
         //将obj赋给model.groupname
         //[group SetTypeByObj:(NSString *)object];
         cell.groupModel = group;
-//        NSLog(@"%@, %@", NSStringFromCGRect(cell.frame), NSStringFromCGRect(cell.contentView.frame));
-//        NSLog(@"%ld", (long)self.tableView.style);
+        //NSLog(@"%ld=%f", (long)cell.groupModel.ID.row, cell.alpha);
         
         return cell;
     }
@@ -304,30 +435,53 @@
     NSLog(@"tableView:didSelectRowAtIndexPath: %@", indexPath);
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+
+{
+    UIEdgeInsets insets = UIEdgeInsetsMake(0, 0, 0, 0);
+    // 三个方法并用，实现自定义分割线效果
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+        cell.separatorInset = insets;
+    }
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:insets];
+    }
+    if([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]){
+        [cell setPreservesSuperviewLayoutMargins:NO];
+    }
+    
+}
+
 #pragma mark - JTTableViewGestureAddingRowDelegate
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsAddRowAtIndexPath:(NSIndexPath *)indexPath {
     FQGroup *_group = [FQGroup initwithObj:ADDING_CELL withType:GROUP_TYPE_ADDING_CELL];
     [self.groups insertObject:_group atIndex:indexPath.row];
+    [self.bl insertwithmodel:_group atIdx:indexPath.row];
+    NSLog(@"begin to add! %lu", (unsigned long)[self.bl findAll].count);
 }
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsCommitRowAtIndexPath:(NSIndexPath *)indexPath {
-    //UITextField *textfield = [[UITextField alloc]initWithFrame:CGRectMake(0,250, 320, 60)];
-    //[self.tableView addSubview:textfield];
-    //[textfield becomeFirstResponder];
-    FQGroup *_group = [FQGroup initwithObj:@"Added!" withType:GROUP_TYPE_ADDED_CELL];
+    FQGroup *_group = [FQGroup initwithObj:@"" withType:GROUP_TYPE_ADDED_CELL];
     [self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
-    
+    [self.bl replacewithmodel:_group atIdx:indexPath.row];
+
     UITableViewCell *cell = (id)[gestureRecognizer.tableView cellForRowAtIndexPath:indexPath];
     if ([cell isKindOfClass:([JTTransformableTableViewCell class])]) {
         ((JTTransformableTableViewCell *)cell).finishedHeight = NORMAL_CELL_FINISHING_HEIGHT;
     }
 
     [self.tableView reloadData];
+    //[self.tableView beginUpdates];
+    //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];//UITableViewRowAnimationLeft
+    //[self.tableView endUpdates];
+    NSLog(@"ADDED! %lu", (unsigned long)[self.bl findAll].count);
 }
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsDiscardRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.groups removeObjectAtIndex:indexPath.row];
+    [self.bl remove:nil atIdx:indexPath.row];
+    NSLog(@"begin to delete! %lu", (unsigned long)[self.bl findAll].count);
 }
 
 // Uncomment to following code to disable pinch in to create cell gesture
@@ -342,26 +496,30 @@
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer didEnterEditingState:(JTTableViewCellEditingState)state forRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-
-    UIColor *backgroundColor = nil;
-    switch (state) {
-        case JTTableViewCellEditingStateMiddle:
-            backgroundColor = [[UIColor redColor] colorWithHueOffset:0.12 * indexPath.row / [self tableView:self.tableView numberOfRowsInSection:indexPath.section]];
-            break;
-        case JTTableViewCellEditingStateRight:
-            backgroundColor = [UIColor greenColor];
-            break;
-        default:
-            backgroundColor = [UIColor darkGrayColor];
-            break;
+//
+//    UIColor *backgroundColor = nil;
+//    switch (state) {
+//        case JTTableViewCellEditingStateMiddle:
+//            backgroundColor = [[UIColor redColor] colorWithHueOffset:0.12 * indexPath.row / [self tableView:self.tableView numberOfRowsInSection:indexPath.section]];
+//            break;
+//        case JTTableViewCellEditingStateRight:
+//            backgroundColor = [UIColor greenColor];
+//            break;
+//        default:
+//            backgroundColor = [UIColor darkGrayColor];
+//            break;
+//    }
+//    cell.contentView.backgroundColor = backgroundColor;
+//    if ([cell isKindOfClass:[JTTransformableTableViewCell class]]) {
+//        ((JTTransformableTableViewCell *)cell).tintColor = backgroundColor;
+//    }
+    if([cell isKindOfClass:[FQTodoHomeCell class]]) {
+        FQTodoHomeCell *fqcell = (FQTodoHomeCell *)cell;
+        [fqcell handlePan:[gestureRecognizer valueForKey:@"panRecognizer"]];
     }
-    cell.contentView.backgroundColor = backgroundColor;
-    if ([cell isKindOfClass:[JTTransformableTableViewCell class]]) {
-        ((JTTransformableTableViewCell *)cell).tintColor = backgroundColor;
-    }
-    else if([cell isKindOfClass:[FQTodoHomeCell class]]) {
-        ((FQTodoHomeCell *)cell).tintColor = backgroundColor;
-    }
+    
+    
+    //NSLog(@"Editing %ld", indexPath.row);
 }
 
 // This is needed to be implemented to let our delegate choose whether the panning gesture should work
@@ -378,27 +536,35 @@
     if (state == JTTableViewCellEditingStateLeft) {
         // An example to discard the cell at JTTableViewCellEditingStateLeft
         [self.groups removeObjectAtIndex:indexPath.row];
+        [self.bl remove:nil atIdx:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
     } else if (state == JTTableViewCellEditingStateRight) {
         // An example to retain the cell at commiting at JTTableViewCellEditingStateRight
         FQGroup *_group = [self.groups objectAtIndex:indexPath.row];
         _group.type = GROUP_TYPE_DONE;
-        //[self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
         
+        //改变cell的颜色
         [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         rowToBeMovedToBottom = indexPath;
     } else {
         // JTTableViewCellEditingStateMiddle shouldn't really happen in
         // - [JTTableViewGestureDelegate gestureRecognizer:commitEditingState:forRowAtIndexPath:]
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        if([cell isKindOfClass:[FQTodoHomeCell class]]) {
+            FQTodoHomeCell *fqcell = (FQTodoHomeCell *)cell;
+            [fqcell handlePan:[gestureRecognizer valueForKey:@"panRecognizer"]];
+        }
     }
     [tableView endUpdates];
 
     // Row color needs update after datasource changes, reload it.
     [tableView performSelector:@selector(reloadVisibleRowsExceptIndexPath:) withObject:indexPath afterDelay:JTTableViewRowAnimationDuration];
 
+    //移动cell的位置
     if (rowToBeMovedToBottom) {
         [self performSelector:@selector(moveRowToBottomForIndexPath:) withObject:rowToBeMovedToBottom afterDelay:JTTableViewRowAnimationDuration * 2];
     }
+    NSLog(@"Commiting Editing %ld %p", indexPath.row, rowToBeMovedToBottom);
 }
 
 #pragma mark JTTableViewGestureMoveRowDelegate
@@ -411,6 +577,7 @@
     self.grabbedObject = [self.groups objectAtIndex:indexPath.row];
     FQGroup *_group = [FQGroup initwithObj:DUMMY_CELL withType:GROUP_TYPE_DUMMY];
     [self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
+    NSLog(@"Begain to Move %lu", [[self.bl findAll] count]);
 }
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsMoveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
@@ -422,6 +589,21 @@
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsReplacePlaceholderForRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.groups replaceObjectAtIndex:indexPath.row withObject:self.grabbedObject];
     self.grabbedObject = nil;
+    
+    debugLog(@"End to Move %d, %lu", [self.bl writewithArray:self.groups], [[self.bl findAll] count]);
+}
+
+#pragma mark - hide keyboard
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [super touchesBegan:touches withEvent:event];
+    [self.view endEditing:YES];
+}
+
+//滚动时退出键盘
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    NSLog(@"scrollViewWillBeginDragging");
+    [self.view endEditing:YES];
 }
 
 @end

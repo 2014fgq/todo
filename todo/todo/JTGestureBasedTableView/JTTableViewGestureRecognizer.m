@@ -120,7 +120,7 @@ CGFloat const JTTableViewRowAnimationDuration          = 0.25;       // Rough gu
         }
         
         // We would like to reload other rows as well
-        [self.tableView performSelector:@selector(reloadVisibleRowsExceptIndexPath:) withObject:self.addingIndexPath afterDelay:JTTableViewRowAnimationDuration];
+        //[self.tableView performSelector:@selector(reloadVisibleRowsExceptIndexPath:) withObject:self.addingIndexPath afterDelay:JTTableViewRowAnimationDuration];
         
         self.addingIndexPath = nil;
         [self.tableView endUpdates];

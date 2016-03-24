@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface FQTodo : NSObject
-- (void) initWithDict;
-- (void) todoWithDict;
+- (instancetype)initWithDict:(NSDictionary *)dict;
++ (instancetype)TodoWithDict:(NSDictionary *)dict;
 @end

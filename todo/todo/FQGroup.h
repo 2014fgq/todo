@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ViewController.h"
+//#import "YTKKeyValueStore.h"
 typedef enum {
     GROUP_TYPE_NORMAL     = 0,
     GROUP_TYPE_DUMMY      = 1,
@@ -24,11 +25,12 @@ typedef enum {
 @property (nonatomic, assign) NSInteger todoAll;//完成总数
 @property (nonatomic, assign) BOOL IsFinish;//是否完成
 @property (nonatomic, assign) NSInteger type;
-- (void)initWithDict;
-- (void)groupWithDict;
-- (void)removeNameAtIdx:(NSInteger)Idx;
-- (void)SetTypeByObj:(NSString *)obj;
+@property (strong, nonatomic) NSIndexPath *ID;
+- (instancetype)initWithDict:(NSDictionary *)dict;
++ (instancetype)groupWithDict:(NSDictionary *)dict;
++ (NSDictionary *)DictWithModel:(FQGroup *)model;
 + (instancetype)initwithdefaultobj:(NSString *)obj;
 +(instancetype)initwithObj:(NSString *)obj withType:(NSInteger)type;
 + (NSMutableArray *)GroupsWithDefaultRows;
 @end
+

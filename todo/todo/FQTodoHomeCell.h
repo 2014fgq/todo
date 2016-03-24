@@ -15,15 +15,15 @@
 @protocol FQTodoHomeCellDelegate;
 
 @interface FQTodoHomeCell : UITableViewCell <UITextFieldDelegate>
-@property (strong, nonatomic) UITextField *textfield;
-@property (strong, nonatomic) UILabel *label;
-@property (strong, nonatomic) UILabel *seplabel;
+@property (weak, nonatomic) UITextField *textfield;
+@property (weak, nonatomic) UILabel *label;
+@property (weak, nonatomic) UILabel *seplabel;
 @property (strong, nonatomic) FQGroup *groupModel;
 @property (strong, nonatomic) id <FQTodoHomeCellDelegate> delegate;
-@property (strong, nonatomic) NSIndexPath *IdxPath;
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 + (instancetype)TodoHomeCellWithTableView:(UITableView *)tableView;
 - (void)setGroupModel:(FQGroup *)groupModel;
+- (void)handlePan:(UIPanGestureRecognizer *)recognizer;
 @end
 
 @protocol FQTodoHomeCellDelegate <NSObject>
