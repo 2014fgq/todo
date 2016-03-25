@@ -317,26 +317,16 @@ const float UI_CUES_WIDTH = 50.0f;
     
     // add a layer that overlays the cell adding a subtle gradient effect
     _gradientLayer = [CAGradientLayer layer];
-    _gradientLayer.colors = @[(id)[[UIColor colorWithWhite:1.0f alpha:0.2f] CGColor],
-                              (id)[[UIColor colorWithWhite:1.0f alpha:0.1f] CGColor],
+    _gradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.25f alpha:0.8f] CGColor],
+                              //(id)[[UIColor colorWithWhite:1.0f alpha:0.1f] CGColor],
                               (id)[[UIColor clearColor] CGColor],
-                              (id)[[UIColor colorWithWhite:0.0f alpha:0.1f] CGColor]];
+                              (id)[[UIColor clearColor] CGColor],
+                              (id)[[UIColor colorWithWhite:0.25f alpha:0.8f] CGColor]];
     _gradientLayer.locations = @[@0.00f,
                                  @0.01f,
-                                 @0.95f,
+                                 @0.99f,
                                  @1.00f];
-    [self.layer insertSublayer:_gradientLayer atIndex:0];
-    
-    // add a layer that renders a green background when an item is complete
-    _itemCompleteLayer = [CALayer layer];
-    _itemCompleteLayer.backgroundColor = [[[UIColor alloc] initWithRed:0.0 green:0.6 blue:0.0 alpha:1.0] CGColor];
-    _itemCompleteLayer.hidden = YES;
-    [self.layer insertSublayer:_itemCompleteLayer atIndex:0];
-    
-    // add a pan recognizer
-    //UIGestureRecognizer* recognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
-    //recognizer.delegate = self;
-    //[self addGestureRecognizer:recognizer];
+    [self.contentView.layer insertSublayer:_gradientLayer atIndex:0];
 }
 // utility method for creating the contextual cues
 - (UILabel*) createCueLabel
@@ -350,6 +340,8 @@ const float UI_CUES_WIDTH = 50.0f;
 
 - (void)handlePan:(UIPanGestureRecognizer *)recognizer
 {
+    //cell内部处理panBegin，panChanged， panEnd是tableviewcontroller处理
+    
     // if the gesture has just started, record the current centre location
     if (recognizer.state == UIGestureRecognizerStateBegan)
     {
@@ -363,12 +355,8 @@ const float UI_CUES_WIDTH = 50.0f;
         self.contentView.center = CGPointMake(_originalCenter.x + translation.x, _originalCenter.y);
         
         // determine whether the item has been dragged far enough to initiate a delete / complete
-        _markCompleteOnDragRelease = self.contentView.frame.origin.x > self.contentView.frame.size.width / 2;
-        _deleteOnDragRelease = self.contentView.frame.origin.x < -self.contentView.frame.size.width / 2;
-        
-        // fade the contextual cues
-        float cueAlpha = fabs(self.contentView.frame.origin.x) / (self.contentView.frame.size.width / 2);
-        [self setCueAlpha:cueAlpha];
+        _markCompleteOnDragRelease = self.contentView.frame.origin.x > FQTODO_PANHEIGHT;
+        _deleteOnDragRelease = self.contentView.frame.origin.x < FQTODO_PANHEIGHT;
         
         // indicate when the item have been pulled far enough to invoke the given action
         _tickLabel.textColor = _markCompleteOnDragRelease ?
@@ -389,28 +377,7 @@ const float UI_CUES_WIDTH = 50.0f;
                                  self.contentView.frame = originalFrame;
                              }
         ];
-
-        
-//        if (_markCompleteOnDragRelease)
-//        {
-//            // mark the item as complete and update the UI state
-//            _itemCompleteLayer.hidden = NO;
-//        }
-//        
-//        if (_deleteOnDragRelease)
-//        {
-//            // notify the delegate that this item should be deleted
-//            //[self.delegate toDoItemDeleted:self.todoItem];
-//        }
     }
     
 }
-
-// sets the alpha of the contextual cues
-- (void) setCueAlpha:(float)alpha
-{
-    _tickLabel.alpha = alpha;
-    _crossLabel.alpha = alpha;
-}
-
 @end

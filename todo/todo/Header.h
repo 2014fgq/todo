@@ -67,4 +67,6 @@
     {\
         NSLog(@"[%s]%s is null!", __func__, #pointer);\
     }
+
+#define FQTODO_PANHEIGHT 80
 #endif /* Header_h */
