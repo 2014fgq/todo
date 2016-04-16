@@ -41,7 +41,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     // Setup your tableView.delegate and tableView.datasource,
     // then enable gesture recognition in one line.
     self.tableViewRecognizer = [self.tableView enableGestureTableViewWithDelegate:self];
@@ -52,7 +52,6 @@
     
     self.title = @"Todo";
     [self tableview_navigationview_setup:self];
-    //[self install_keyboardNoti];
     NSLog(@"viewDidLoad Is Finish!");
 }
 
@@ -63,78 +62,11 @@
 
 - (void)dealloc {
     NSLog(@"dealloc");
-    
-//    for (FQGroup *_group in self.groups) {
-//        NSLog(@"%@", _group.isf);
-//    }
-}
-
-- (void)writedataback
-{
-    for (FQGroup *_group in self.groups) {
-        NSLog(@"%@", _group);
-        //[_bl update:_group];
-    }
-}
-
-#pragma mark - 监听键盘
--(void) install_keyboardNoti
-{
-    //监听键盘弹出事件
-    //监听键盘通知
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardDidHideNotification object:nil];
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
-    
-    //UIKeyboardDidShowNotification,键盘显示
-    //UIKeyboardDidHideNotification,键盘隐藏
-    //UIKeyboardWillChangeFrameNotification,键盘frame改变
-    
-}
-
-#pragma mark - 键盘更改frame的时候，键盘弹出
-//不适用willshow,willhide,didshow,didhide方法，因为hide太慢了,为了对称，show都不使用了
-- (void)keyboardWillChangeFrame:(NSNotification*)notification
-{
-    //NSLog(@"keyboardWillChangeFrame %f", [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y);
-    
-    //获取键盘弹入弹出时的位置
-    CGFloat keyboardbefore = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y;
-    CGFloat keyboardend = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].origin.y;
-    CGFloat diff = keyboardend - keyboardbefore;
-    NSInteger scroll = 0;
-    NSInteger Idx = self.IdxPath.row;
-    //根据diff来判断键盘是弹入还是弹出
-    if(diff < 0) //弹出
-        scroll = -Idx*NORMAL_CELL_FINISHING_HEIGHT;
-    else
-        scroll = 0;//不滚动，为0
-    
-    //动画展示键盘弹入弹出
-    [UIView animateWithDuration:0.25 animations:^{
-        self.view.transform = CGAffineTransformMakeTranslation(0, scroll);
-    }];
-    //NSIndexPath *randomIdxPath = [NSIndexPath indexPathForRow:4 inSection:0];
-    //[self.tableView scrollToRowAtIndexPath:randomIdxPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-}
-
-- (void)keyboardWillDidShow:(NSNotification*)notification
-{
-}
-
-- (void)keyboardWillHide:(NSNotification*)notification
-{
-    //NSLog(@"keyboardWillChangeFrame %f", [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y);
 }
 
 #pragma mark - FQTodoHomeCellDelegate
-- (void) SetCurCellByIdxPath:(NSIndexPath *)IdxPath
-{
-    //设置当前的IdxPath
-    self.IdxPath = IdxPath;
-}
-
+# warning cell的delegate不太规范，应该包含cell的参数
+# warning 滚动变色的功能有bug,在tablewview中间捏合加入cell之后，点击修改的效果有bug
 - (void)ScrollUpWithIdxPath:(NSIndexPath *)IdxPath
 {
     //[self.tableView addSubview:_windowsview];
@@ -158,7 +90,7 @@
                              }
                          }];
     }
-    NSLog(@"Begin to Edit! %lu", (unsigned long)[self.bl findAll].count);
+    NSLog(@"Row %ld Begin to Edit! %lu", IdxPath.row, (unsigned long)[self.bl findAll].count);
 }
 
 -(void)ScrollDownWithIdxPath:(NSIndexPath *)IdxPath
@@ -181,7 +113,7 @@
     //if([cell isKindOfClass:[FQGroup class]])
         //[self.bl replacewithmodel:cell.groupModel atIdx:IdxPath.row];
 
-    NSLog(@"End to Edit! count is %lu", (unsigned long)[self.bl findAll].count);
+    NSLog(@"Row %ld End to Edit! count is %lu", IdxPath.row, (unsigned long)[self.bl findAll].count);
 }
 
 //如果textfield获取的数据为空，清空数据，重新计算Indexpath，不然所有cell的IndexPath.row会增加1
@@ -208,6 +140,7 @@
     NSLog(@"End to Edit! cell %ld text is Null!", IndexPath.row);
 }
 #pragma mark - 懒加载
+# warning 懒加载数据应该使用中文实例
 - (NSMutableArray *)groups
 {
     if(!_bl)
@@ -227,6 +160,7 @@
     return _groups;
 }
 
+//数据进行重排，没完成的在前面，完成了的在后面
 - (NSMutableArray *) sortByIsFinish:(NSArray *)array
 {
     CHECK_NULLPOINTER(array)
@@ -246,6 +180,7 @@
     [notfinisharray addObjectsFromArray:finisharray];
     return notfinisharray;
 }
+
 
 - (NSInteger)GetLastUnFinish
 {
@@ -285,6 +220,7 @@
     //viewcontroller.tableView.contentInset = UIEdgeInsetsMake(NORMAL_CELL_FINISHING_HEIGHT, 0, 0, 0);
     //viewcontroller.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(NORMAL_CELL_FINISHING_HEIGHT, 0, 0, 0);
     //配置UINavigationController
+# warning 颜色可以不用16进制了。废弃16进制获取颜色的功能
     self.navigationController.navigationBar.barTintColor =
         [UIColor colorWithHex:0x222e3b];
     //self.navigationController.navigationBar.backgroundColor = [UIColor blueColor];
@@ -296,9 +232,6 @@
 #pragma mark Private Method
 
 - (void)moveRowToBottomForIndexPath:(NSIndexPath *)indexPath {
-//    id object = [self.groups objectAtIndex:indexPath.row];
-//    [self.groups removeObjectAtIndex:indexPath.row];
-//    [self.groups addObject:object];
     NSIndexPath *desIndexPath = nil;
     FQGroup *group = [self.groups objectAtIndex:indexPath.row];
     

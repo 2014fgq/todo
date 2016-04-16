@@ -12,7 +12,7 @@
 #ifdef DEBUG
 #define debugLog(...) NSLog(__VA_ARGS__)
 #define debugMethod() NSLog(@"%s", __func__)
-#define debug(...)    NSLog(@"%s", __func__, __VA_ARGS__)
+#define debug(...)    NSLog(@"%s"..., __func__, __VA_ARGS__)
 #else
 #define debugLog(...)
 #define debugMethod()

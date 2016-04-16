@@ -42,14 +42,6 @@ const float UI_CUES_WIDTH = 50.0f;
     // Configure the view for the selected state
 }
 
-//- (instancetype) init:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    return self;
-//}
-//
-//- (void)configureCell:(todo_home_cell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-//}
-
 //自定义单元格
 + (instancetype)TodoHomeCellWithTableView:(UITableView *)tableView
 {
@@ -168,32 +160,53 @@ const float UI_CUES_WIDTH = 50.0f;
     [self JudgeSts];
 }
 
-#pragma mark - UITextField的协议
-//- (void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-//{
-//    NSLog(@"touhes Began");
-//}
+//修改外部的状态标志位，判断当前的cell子控件的展示方式
+- (void)JudgeSts
+{
+    switch (self.groupModel.type)
+    {
+            //移动单元格的时候，清空textfield
+        case GROUP_TYPE_DUMMY:
+        {
+            self.textfield.text = @"";
+            self.label.frame = CGRectMake(0, 0, 0, 0);
+            self.contentView.backgroundColor = [UIColor blackColor];
+            break;
+        }
+        case GROUP_TYPE_DONE:
+        {
+            self.groupModel.IsFinish = !self.groupModel.IsFinish;
+            self.groupModel.type = GROUP_TYPE_NORMAL;
+        }
+        default:
+            break;
+    }
+    if(self.groupModel.IsFinish)
+    {
+        self.textfield.textColor = [UIColor grayColor];
+        self.contentView.backgroundColor = [UIColor darkGrayColor];
+    }
+    else
+    {
+        self.textfield.textColor = [UIColor whiteColor];
+        //self.contentView.backgroundColor = [UIColor blackColor];
+        UIColor *backgroundColor = [UIColor colorWithHex:0x2B3A4B];
+        self.contentView.backgroundColor = backgroundColor;//self.backgroundColor;
+    }
+}
 
+#pragma mark - UITextField的协议
+//实现点击返回键，退出键盘
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [self.textfield resignFirstResponder];
     return NO;
 }
-
-- (NSArray *)textfieldAtIndexes:(NSIndexSet *)indexes
-{
-    NSLog(@"%@", indexes);
-    return nil;
-}
+# warning 单击跳转功能未实现，双击修改功能有bug
+//实现单击跳转，双击修改textfield功能
 - ( BOOL )textFieldShouldBeginEditing:( UITextField *)textField
 {
     //如果两次点击的时间间隔小于1秒，则断定为双击事件
-//    NSUInteger curr = [[NSDate date] timeIntervalSince1970];
-//    if (curr-taptime<1) {
-//        [self doubleTap];
-//    }
-//    taptime = curr;
-    NSLog ( @"textFieldShouldBeginEditing");
     tapCount++;
     switch (tapCount)
     {
@@ -213,7 +226,6 @@ const float UI_CUES_WIDTH = 50.0f;
 
 -(void) singleTap
 {
-    NSLog(@"singleTap1");
     tapCount = 0;
 }
 
@@ -260,46 +272,6 @@ const float UI_CUES_WIDTH = 50.0f;
     IsDoubleClick = NO;
 }
 
-- (void)JudgeSts
-{
-    switch (self.groupModel.type)
-    {
-        //移动单元格的时候，清空textfield
-        case GROUP_TYPE_DUMMY:
-        {
-            self.textfield.text = @"";
-            self.label.frame = CGRectMake(0, 0, 0, 0);
-            self.contentView.backgroundColor = [UIColor blackColor];
-            break;
-        }
-        case GROUP_TYPE_DONE:
-        {
-            self.groupModel.IsFinish = !self.groupModel.IsFinish;
-            self.groupModel.type = GROUP_TYPE_NORMAL;
-        }
-//        case GROUP_TYPE_ADDED_CELL:
-//        {
-//            //确保textfield已经被加载可见，可以成为第一焦点
-//            self.textfield.text = @"";
-//            self.groupModel.type = GROUP_TYPE_NORMAL;
-//            [self.textfield becomeFirstResponder];
-//        }
-        default:
-            break;
-    }
-    if(self.groupModel.IsFinish)
-    {
-        self.textfield.textColor = [UIColor grayColor];
-        self.contentView.backgroundColor = [UIColor darkGrayColor];
-    }
-    else
-    {
-        self.textfield.textColor = [UIColor whiteColor];
-        //self.contentView.backgroundColor = [UIColor blackColor];
-        UIColor *backgroundColor = [UIColor colorWithHex:0x2B3A4B];
-        self.contentView.backgroundColor = backgroundColor;//self.backgroundColor;
-    }
-}
 /*
  [self configurecellinfo:cell forRowAtIndexPath:indexPath];
  [self configureCell:cell forRowAtIndexPath:indexPath];*/
@@ -317,14 +289,14 @@ const float UI_CUES_WIDTH = 50.0f;
     
     // add a layer that overlays the cell adding a subtle gradient effect
     _gradientLayer = [CAGradientLayer layer];
-    _gradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.25f alpha:0.8f] CGColor],
+    _gradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.2f alpha:0.4f] CGColor],
                               //(id)[[UIColor colorWithWhite:1.0f alpha:0.1f] CGColor],
                               (id)[[UIColor clearColor] CGColor],
                               (id)[[UIColor clearColor] CGColor],
-                              (id)[[UIColor colorWithWhite:0.25f alpha:0.8f] CGColor]];
+                              (id)[[UIColor colorWithWhite:0.2f alpha:0.4f] CGColor]];
     _gradientLayer.locations = @[@0.00f,
                                  @0.01f,
-                                 @0.99f,
+                                 @0.98f,
                                  @1.00f];
     [self.contentView.layer insertSublayer:_gradientLayer atIndex:0];
 }
