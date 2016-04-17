@@ -1,19 +1,19 @@
 //
-//  Header.h
+//  PrefixHeader.pch
 //  todo
 //
-//  Created by IMAC on 16/3/19.
+//  Created by IMAC on 16/4/16.
 //  Copyright © 2016年 IMAC. All rights reserved.
 //
 
-#ifndef Header_h
-#define Header_h
-
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+#warning pch 文件无法使用
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 #ifdef DEBUG
 #define debugLog(...) NSLog(__VA_ARGS__)
 #define debugMethod() NSLog(@"%s", __func__)
-#define debug(...)    NSLog(@"%s"__VA_ARGS__, __func__)
-#define debugframe(view) debugLog(@"%@", NSStringFromCGRect(view.frame));
 #else
 #define debugLog(...)
 #define debugMethod()
@@ -39,7 +39,9 @@
 #define UI_LABEL_FONT_SIZE          12
 #define UI_LABEL_FONT               [UIFont systemFontOfSize:UI_LABEL_FONT_SIZE]
 
-
+#define kScreenWidth  [UIScreen mainScreen].bounds.size.width
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
+#define kScreenBounds [UIScreen mainScreen].bounds
 
 /*
  *  System Versioning Preprocessor Macros
@@ -50,9 +52,6 @@
 #define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 
-#define kScreenWidth  [UIScreen mainScreen].bounds.size.width
-#define kScreenHeight [UIScreen mainScreen].bounds.size.height
-#define kScreenBounds [UIScreen mainScreen].bounds
 /*
  Usage sample:
  
@@ -65,17 +64,10 @@
  }
  
  */
-
 #define  CHECK_NULLPOINTER(pointer) \
-    if(!pointer)\
-    {\
-        NSLog(@"[%s]%s is null!", __func__, #pointer);\
-    }
+if(!pointer)\
+{\
+NSLog(@"[%s]%s is null!", __func__, #pointer);\
+}
 
-#define FQTODO_PANHEIGHT 80
-
-
-#define FQTODO_NAVIGCOLOR 0x222e3b
-#define COMMITING_CREATE_CELL_HEIGHT 60
-#define NORMAL_CELL_FINISHING_HEIGHT 60
-#endif /* Header_h */
+#endif /* PrefixHeader_pch */

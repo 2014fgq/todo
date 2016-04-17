@@ -19,7 +19,7 @@
 @property (weak, nonatomic) UILabel *label;
 @property (weak, nonatomic) UILabel *seplabel;
 @property (strong, nonatomic) FQGroup *groupModel;
-@property (strong, nonatomic) id <FQTodoHomeCellDelegate> delegate;
+@property (weak, nonatomic) id <FQTodoHomeCellDelegate> delegate;
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 + (instancetype)TodoHomeCellWithTableView:(UITableView *)tableView;
 - (void)setGroupModel:(FQGroup *)groupModel;
@@ -27,7 +27,6 @@
 @end
 
 @protocol FQTodoHomeCellDelegate <NSObject>
-- (void)SetCurCellByIdxPath:(NSIndexPath *)IdxPath;
 - (void)ScrollUpWithIdxPath:(NSIndexPath *)IdxPath;
 - (void)ScrollDownWithIdxPath:(NSIndexPath *)IdxPath;
 - (void)needsDiscardRowAtIdxPath:(NSIndexPath *)IdxPath;

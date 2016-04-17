@@ -123,7 +123,7 @@ const float UI_CUES_WIDTH = 50.0f;
     
     //配置内容
     self.label.textAlignment = NSTextAlignmentCenter;//UITextAlignmentCenter 在ios6废弃
-    self.label.text = [NSString stringWithFormat:@"%ld / %ld", (long)groupModel.todoOK, groupModel.todoAll];
+    self.label.text = [NSString stringWithFormat:@"%ld / %ld", (long)groupModel.todoOK, (long)groupModel.todoAll];
     self.label.textColor = [UIColor colorWithHex:0x71859B];
     self.label.font = [UIFont fontWithName:@"Helvetica" size:10];
     self.label.backgroundColor = [UIColor colorWithHex:0x44566A];
@@ -247,8 +247,8 @@ const float UI_CUES_WIDTH = 50.0f;
 {
     NSLog(@"textFieldDidBeginEditing");
     //当开始点击textfield的时候，光标进入，有且只有触发一次,调用代理，告诉当前点击的textfield。
-    if([self.delegate respondsToSelector:@selector(SetCurCellByIdxPath:)])
-        [self.delegate SetCurCellByIdxPath:_groupModel.ID];
+//    if([self.delegate respondsToSelector:@selector(SetCurCellByIdxPath:)])
+//        [self.delegate SetCurCellByIdxPath:_groupModel.ID];
     //textfield输入时，键盘弹出，调用tableview上滚
     if([self.delegate respondsToSelector:@selector(ScrollUpWithIdxPath:)])
         [self.delegate ScrollUpWithIdxPath:_groupModel.ID];

@@ -10,15 +10,15 @@
 #import "FQGroup.h"
 #import "Header.h"
 @class FQGroup;
+
 @interface FQGroupBL : NSObject 
-- (NSString *)applicationDocumentsDirectoryFile;
-- (void)createEditableCopyOfDatabaseIfNeeded;
 - (BOOL)remove:(FQGroup *)model atIdx:(NSInteger)Idx;
 - (BOOL)insertwithmodel:(FQGroup *)model atIdx:(NSInteger)Idx;
 - (BOOL)replacewithmodel:(FQGroup *)model atIdx:(NSInteger)Idx;
 - (BOOL)writewithArray:(NSArray *)array;
-+ (FQGroupBL*)sharedManager;
 -(NSMutableArray *)findAll;
+
++ (instancetype)sharedManager;
 @end
 
 //@interface FQGroupBL: NSObject

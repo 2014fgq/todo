@@ -7,8 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "ViewController.h"
 @interface FQTodo : NSObject
+@property (strong, nonatomic) NSIndexPath *ID;
+@property (strong, nonatomic) NSString *groupname;//组名
+@property (nonatomic, assign) BOOL IsFinish;//是否完成
+@property (nonatomic, assign) NSInteger type;
+
 - (instancetype)initWithDict:(NSDictionary *)dict;
 + (instancetype)TodoWithDict:(NSDictionary *)dict;
++ (NSMutableDictionary *)DictWithModel:(FQTodo *)model;
 @end

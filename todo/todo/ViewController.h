@@ -9,13 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "Header.h"
 #import "FQGroup.h"
-@interface ViewController : UITableViewController
-@property (strong, nonatomic) NSMutableArray *groups;
+#import "BaseTableViewController.h"
+
+@interface ViewController : BaseTableViewController
+
 #define ADDING_CELL @"Continue..."
 #define DONE_CELL @"Done"
 #define DUMMY_CELL @"Dummy"
-#define COMMITING_CREATE_CELL_HEIGHT 60
-#define NORMAL_CELL_FINISHING_HEIGHT 60
-- (void)writedataback;
+
 @end
 

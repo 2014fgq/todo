@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		886494CF1C9B8AD900256797 /* FQGroupBL+PLIST.m in Sources */ = {isa = PBXBuildFile; fileRef = 886494CE1C9B8AD900256797 /* FQGroupBL+PLIST.m */; };
+		8869EF111CC2F49600A6A271 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8869EF101CC2F49600A6A271 /* DetailViewController.m */; };
+		8869EF171CC2FE8400A6A271 /* NewDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8869EF161CC2FE8400A6A271 /* NewDetailView.m */; };
+		8869EF1B1CC311F800A6A271 /* BaseTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8869EF1A1CC311F800A6A271 /* BaseTableViewController.m */; };
+		8869EF1E1CC36E9400A6A271 /* FQTodoBL+PLIST.m in Sources */ = {isa = PBXBuildFile; fileRef = 8869EF1D1CC36E9400A6A271 /* FQTodoBL+PLIST.m */; };
 		88A019561C93E9F700AA0B85 /* FQTodoHomeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A019551C93E9F700AA0B85 /* FQTodoHomeCell.m */; };
 		88A019591C93F53600AA0B85 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A019581C93F53600AA0B85 /* UIColor+Hex.m */; };
 		88A0195D1C94112D00AA0B85 /* FQGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A0195C1C94112D00AA0B85 /* FQGroup.m */; };
@@ -29,6 +33,15 @@
 		610100716F7F0E10DD6D7CA9 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		886494CD1C9B8AD900256797 /* FQGroupBL+PLIST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FQGroupBL+PLIST.h"; sourceTree = "<group>"; };
 		886494CE1C9B8AD900256797 /* FQGroupBL+PLIST.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FQGroupBL+PLIST.m"; sourceTree = "<group>"; };
+		8869EF0F1CC2F49600A6A271 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		8869EF101CC2F49600A6A271 /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		8869EF151CC2FE8400A6A271 /* NewDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewDetailView.h; sourceTree = "<group>"; };
+		8869EF161CC2FE8400A6A271 /* NewDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewDetailView.m; sourceTree = "<group>"; };
+		8869EF181CC3018200A6A271 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrefixHeader.pch; path = ../PrefixHeader.pch; sourceTree = "<group>"; };
+		8869EF191CC311F800A6A271 /* BaseTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseTableViewController.h; sourceTree = "<group>"; };
+		8869EF1A1CC311F800A6A271 /* BaseTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseTableViewController.m; sourceTree = "<group>"; };
+		8869EF1C1CC36E9400A6A271 /* FQTodoBL+PLIST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FQTodoBL+PLIST.h"; sourceTree = "<group>"; };
+		8869EF1D1CC36E9400A6A271 /* FQTodoBL+PLIST.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FQTodoBL+PLIST.m"; sourceTree = "<group>"; };
 		888FCF351C9E0A1B0076B6A2 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
 		88A019541C93E9F700AA0B85 /* FQTodoHomeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FQTodoHomeCell.h; sourceTree = "<group>"; };
 		88A019551C93E9F700AA0B85 /* FQTodoHomeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FQTodoHomeCell.m; sourceTree = "<group>"; };
@@ -76,6 +89,8 @@
 				88A0195C1C94112D00AA0B85 /* FQGroup.m */,
 				88A0195E1C94119200AA0B85 /* FQTodo.h */,
 				88A0195F1C94119200AA0B85 /* FQTodo.m */,
+				8869EF1C1CC36E9400A6A271 /* FQTodoBL+PLIST.h */,
+				8869EF1D1CC36E9400A6A271 /* FQTodoBL+PLIST.m */,
 				886494CD1C9B8AD900256797 /* FQGroupBL+PLIST.h */,
 				886494CE1C9B8AD900256797 /* FQGroupBL+PLIST.m */,
 			);
@@ -120,6 +135,7 @@
 		88D92CC51C93B9C600F57305 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8869EF181CC3018200A6A271 /* PrefixHeader.pch */,
 				88D92CCE1C93B9C600F57305 /* Main.storyboard */,
 				88D92CD11C93B9C600F57305 /* Assets.xcassets */,
 				88D92CD31C93B9C600F57305 /* LaunchScreen.storyboard */,
@@ -147,6 +163,10 @@
 			children = (
 				88D92CCB1C93B9C600F57305 /* ViewController.h */,
 				88D92CCC1C93B9C600F57305 /* ViewController.m */,
+				8869EF0F1CC2F49600A6A271 /* DetailViewController.h */,
+				8869EF101CC2F49600A6A271 /* DetailViewController.m */,
+				8869EF191CC311F800A6A271 /* BaseTableViewController.h */,
+				8869EF1A1CC311F800A6A271 /* BaseTableViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -156,6 +176,8 @@
 			children = (
 				88A019551C93E9F700AA0B85 /* FQTodoHomeCell.m */,
 				88A019541C93E9F700AA0B85 /* FQTodoHomeCell.h */,
+				8869EF151CC2FE8400A6A271 /* NewDetailView.h */,
+				8869EF161CC2FE8400A6A271 /* NewDetailView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -301,6 +323,7 @@
 			files = (
 				88D92CCD1C93B9C600F57305 /* ViewController.m in Sources */,
 				88A019591C93F53600AA0B85 /* UIColor+Hex.m in Sources */,
+				8869EF171CC2FE8400A6A271 /* NewDetailView.m in Sources */,
 				88D92CE31C93BB9800F57305 /* JTTableViewGestureRecognizer.m in Sources */,
 				88D92CCA1C93B9C600F57305 /* AppDelegate.m in Sources */,
 				88A019601C94119200AA0B85 /* FQTodo.m in Sources */,
@@ -308,8 +331,11 @@
 				886494CF1C9B8AD900256797 /* FQGroupBL+PLIST.m in Sources */,
 				88D92CE41C93BB9800F57305 /* JTTransformableTableViewCell.m in Sources */,
 				88D92CC71C93B9C600F57305 /* main.m in Sources */,
+				8869EF1B1CC311F800A6A271 /* BaseTableViewController.m in Sources */,
 				88D92CE51C93BB9800F57305 /* UIColor+JTGestureBasedTableViewHelper.m in Sources */,
 				88A0195D1C94112D00AA0B85 /* FQGroup.m in Sources */,
+				8869EF111CC2F49600A6A271 /* DetailViewController.m in Sources */,
+				8869EF1E1CC36E9400A6A271 /* FQTodoBL+PLIST.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +436,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -421,7 +448,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = todo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fzgq.todo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -434,7 +461,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = todo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fzgq.todo;
 				PRODUCT_NAME = "$(TARGET_NAME)";

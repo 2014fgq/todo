@@ -22,5 +22,20 @@
 {
     return [[self alloc] initWithDict:dict];
 }
+
++ (NSMutableDictionary *)DictWithModel:(FQTodo *)model
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setValue:model.groupname forKey:@"groupname"];
+    [dict setValue:[NSNumber numberWithInteger:model.type] forKey:@"type"];
+    [dict setValue:[NSNumber numberWithInteger:model.IsFinish] forKey:@"IsFinish"];
+    return dict;
+}
+
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key {
+    if ([key isEqualToString:@"ID"]) {
+        NSLog(@"ignore the key %@" , key);
+    }
+}
 @end
 

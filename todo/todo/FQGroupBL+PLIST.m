@@ -8,10 +8,15 @@
 
 #import "FQGroupBL+PLIST.h"
 
+@interface FQGroupBL ()
+#define TODO_PLIST @"todo.plist"
+- (NSString *)applicationDocumentsDirectoryFile;
+- (void)createEditableCopyOfDatabaseIfNeeded;
+@end
+
 @implementation FQGroupBL
 static FQGroupBL *sharedManager = nil;
-#define TODO_PLIST @"todo.plist"
-+ (FQGroupBL*)sharedManager
++ (instancetype)sharedManager
 {
     static dispatch_once_t once;
     dispatch_once(&once, ^{
