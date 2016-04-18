@@ -12,6 +12,7 @@
 		8869EF171CC2FE8400A6A271 /* NewDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8869EF161CC2FE8400A6A271 /* NewDetailView.m */; };
 		8869EF1B1CC311F800A6A271 /* BaseTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8869EF1A1CC311F800A6A271 /* BaseTableViewController.m */; };
 		8869EF1E1CC36E9400A6A271 /* FQTodoBL+PLIST.m in Sources */ = {isa = PBXBuildFile; fileRef = 8869EF1D1CC36E9400A6A271 /* FQTodoBL+PLIST.m */; };
+		8869EF211CC4B7FB00A6A271 /* FQBaseTodoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8869EF201CC4B7FB00A6A271 /* FQBaseTodoTableViewCell.m */; };
 		88A019561C93E9F700AA0B85 /* FQTodoHomeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A019551C93E9F700AA0B85 /* FQTodoHomeCell.m */; };
 		88A019591C93F53600AA0B85 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A019581C93F53600AA0B85 /* UIColor+Hex.m */; };
 		88A0195D1C94112D00AA0B85 /* FQGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 88A0195C1C94112D00AA0B85 /* FQGroup.m */; };
@@ -42,6 +43,8 @@
 		8869EF1A1CC311F800A6A271 /* BaseTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseTableViewController.m; sourceTree = "<group>"; };
 		8869EF1C1CC36E9400A6A271 /* FQTodoBL+PLIST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FQTodoBL+PLIST.h"; sourceTree = "<group>"; };
 		8869EF1D1CC36E9400A6A271 /* FQTodoBL+PLIST.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FQTodoBL+PLIST.m"; sourceTree = "<group>"; };
+		8869EF1F1CC4B7FB00A6A271 /* FQBaseTodoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FQBaseTodoTableViewCell.h; sourceTree = "<group>"; };
+		8869EF201CC4B7FB00A6A271 /* FQBaseTodoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FQBaseTodoTableViewCell.m; sourceTree = "<group>"; };
 		888FCF351C9E0A1B0076B6A2 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
 		88A019541C93E9F700AA0B85 /* FQTodoHomeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FQTodoHomeCell.h; sourceTree = "<group>"; };
 		88A019551C93E9F700AA0B85 /* FQTodoHomeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FQTodoHomeCell.m; sourceTree = "<group>"; };
@@ -174,10 +177,12 @@
 		88EA1A731C947E9700EF2706 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				88A019551C93E9F700AA0B85 /* FQTodoHomeCell.m */,
 				88A019541C93E9F700AA0B85 /* FQTodoHomeCell.h */,
+				88A019551C93E9F700AA0B85 /* FQTodoHomeCell.m */,
 				8869EF151CC2FE8400A6A271 /* NewDetailView.h */,
 				8869EF161CC2FE8400A6A271 /* NewDetailView.m */,
+				8869EF1F1CC4B7FB00A6A271 /* FQBaseTodoTableViewCell.h */,
+				8869EF201CC4B7FB00A6A271 /* FQBaseTodoTableViewCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -336,6 +341,7 @@
 				88A0195D1C94112D00AA0B85 /* FQGroup.m in Sources */,
 				8869EF111CC2F49600A6A271 /* DetailViewController.m in Sources */,
 				8869EF1E1CC36E9400A6A271 /* FQTodoBL+PLIST.m in Sources */,
+				8869EF211CC4B7FB00A6A271 /* FQBaseTodoTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

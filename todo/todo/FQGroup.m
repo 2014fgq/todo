@@ -18,6 +18,7 @@
     _group.todoOK = 0;
     _group.todoAll = 0;
     _group.IsFinish = false;
+    _group.todo = [NSMutableArray new];
     return _group;
 }
 
@@ -29,6 +30,7 @@
     _group.todoOK = 0;
     _group.todoAll = 0;
     _group.IsFinish = false;
+    _group.todo = [NSMutableArray new];
     return _group;
 }
 
@@ -36,11 +38,9 @@
 {
     // In this example, we setup self.rows as datasource
     NSMutableArray *rows = [NSMutableArray arrayWithObjects:
-                 @"Swipe to the right to complete",
-                 @"Swipe to left to delete",
-                 @"Drag down to create a new cell",
-                 @"Pinch two rows apart to create cell",
-                 @"Long hold to start reorder cell",
+                 @"示例1",
+                 @"示例2",
+                 @"如何使用?",
                  nil];
     
     NSMutableArray *_array = [[NSMutableArray alloc] init];
@@ -56,12 +56,14 @@
 {
     if(self = [super init])
     {
-        //[self setValuesForKeysWithDictionary:dict];
-        self.groupname = [dict valueForKey:@"GROUPNAME"];
-        self.type = [[dict valueForKey:@"TYPE"] intValue];
-        self.todoOK = [[dict valueForKey:@"TODOOK"] intValue];
-        self.todoAll = [[dict valueForKey:@"TODOALL"] intValue];
-        self.IsFinish = [[dict valueForKey:@"ISFINISH"] intValue];
+        [self setValuesForKeysWithDictionary:dict];
+        NSArray *array = [NSArray arrayWithArray:dict[@"todo"]];
+        NSMutableArray *mutablearray = [NSMutableArray new];
+        for (NSDictionary *dict in array) {
+            FQTodo *todo = [FQTodo TodoWithDict:dict];
+            [mutablearray addObject:todo];
+        }
+        self.todo = mutablearray;
     }
     return self;
 }
@@ -70,28 +72,34 @@
     return [[self alloc] initWithDict:dict];
 }
 
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key {
+    if ([key isEqualToString:@"ID"]) {
+        NSLog(@"ignore the key %@" , key);
+    }
+    //if ([key isEqualToString:@"todo"]) {
+    //    NSLog(@"ignore the key %@" , key);
+    //}
+}
+
 #pragma mark - Model to dict
 + (NSDictionary *)DictWithModel:(FQGroup *)model
 {
-//    NSDictionary* dict = [NSDictionary
-//                          dictionaryWithObjects:@[
-//                            model.ID,
-//                            model.groupname]
-//                            //[NSNumber numberWithInteger:model.type],
-//                            //[NSNumber numberWithInteger:model.IsFinish],
-//                            //[NSNumber numberWithInteger:model.todoOK],
-//                            //[NSNumber numberWithInteger:model.todoAll]]
-//                          forKeys:@[@"ID",@"GROUPNAME"]];//]@"TYPE", @"ISFINISH", @"TODOOK", @"TODOALL"]];
-    
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    //[dict setValue:model.ID forKey:@"ID"];
-    [dict setValue:model.groupname forKey:@"GROUPNAME"];
-    [dict setValue:[NSNumber numberWithInteger:model.type] forKey:@"TYPE"];
-    [dict setValue:[NSNumber numberWithInteger:model.IsFinish] forKey:@"ISFINISH"];
-    [dict setValue:[NSNumber numberWithInteger:model.todoOK] forKey:@"TODOOK"];
-    [dict setValue:[NSNumber numberWithInteger:model.todoAll] forKey:@"TODOALL"];
+    [dict setValue:model.groupname forKey:@"groupname"];
+    [dict setValue:[NSNumber numberWithInteger:model.type] forKey:@"type"];
+    [dict setValue:[NSNumber numberWithInteger:model.IsFinish] forKey:@"IsFinish"];
+    [dict setValue:[NSNumber numberWithInteger:model.todoOK] forKey:@"todoOK"];
+    [dict setValue:[NSNumber numberWithInteger:model.todoAll] forKey:@"todoAll"];
+
+    NSArray *array = model.todo;
+    NSMutableArray *mutablearray = [NSMutableArray array];
+    for (FQTodo *todo in array) {
+        NSMutableDictionary *dict = [FQTodo DictWithModel:todo];
+        [mutablearray addObject:dict];
+    }
     
-    //NSLog(@"%@", dict);
+    [dict setValue:mutablearray  forKey:@"todo"];
+    
     return  dict;
 }
 
@@ -115,59 +123,59 @@ static FQGroupBL *sharedManager = nil;
 //    });
 //    return sharedManager;
 //}
-
-- (YTKKeyValueStore *)store
-{
-    if(!_store)
-    {
-        _store = [[YTKKeyValueStore alloc] initDBWithName:DB_NAME];
-        [_store createTableWithName:DB_TABLE_HOME];
-        NSLog(@"%@", _store);
-    }
-    return _store;
-}
-
-#pragma mark - create
-- (void)create:(FQGroup *)model
-{
-    NSString *ID = [NSString stringWithFormat:@"abc%ld", (long)model.ID.row];
-    [_store putObject:model withId:ID intoTable:DB_TABLE_HOME];
-}
-#pragma mark - update
-- (void)update:(FQGroup *)model
-{
-    NSString *ID = [NSString stringWithFormat:@"%ld", (long)model.ID.row];
-    [_store putObject:(id)model withId:ID intoTable:DB_TABLE_HOME];
-}
-
-#pragma mark - delete
-- (void)delete:(FQGroup  *)model
-{
-    NSString *ID = [NSString stringWithFormat:@"%ld", (long)model.ID.row];
-    [_store deleteObjectById:ID fromTable:DB_TABLE_HOME];
-}
-
-+ (void)deleteNameAtIdx:(NSInteger)Idx
-{
-    [self removeKey:@"groupname" AtIdx:Idx];
-}
-
-+ (void)removeKey:(NSString *)key AtIdx:(NSInteger)Idx
-{
-    
-}
-#pragma mark - read
--(FQGroup *)read:(FQGroup *)model
-{
-    NSString *ID = [NSString stringWithFormat:@"abc%ld", (long)model.ID.row];
-    return (FQGroup *)[self.store getObjectById:ID fromTable:DB_NAME];
-}
-
--(NSArray *)findAll
-{
-    NSArray *array = [self.store getAllItemsFromTable:DB_TABLE_HOME];
-    return array;
-}
-
-@end
+//
+//- (YTKKeyValueStore *)store
+//{
+//    if(!_store)
+//    {
+//        _store = [[YTKKeyValueStore alloc] initDBWithName:DB_NAME];
+//        [_store createTableWithName:DB_TABLE_HOME];
+//        NSLog(@"%@", _store);
+//    }
+//    return _store;
+//}
+//
+//#pragma mark - create
+//- (void)create:(FQGroup *)model
+//{
+//    NSString *ID = [NSString stringWithFormat:@"abc%ld", (long)model.ID.row];
+//    [_store putObject:model withId:ID intoTable:DB_TABLE_HOME];
+//}
+//#pragma mark - update
+//- (void)update:(FQGroup *)model
+//{
+//    NSString *ID = [NSString stringWithFormat:@"%ld", (long)model.ID.row];
+//    [_store putObject:(id)model withId:ID intoTable:DB_TABLE_HOME];
+//}
+//
+//#pragma mark - delete
+//- (void)delete:(FQGroup  *)model
+//{
+//    NSString *ID = [NSString stringWithFormat:@"%ld", (long)model.ID.row];
+//    [_store deleteObjectById:ID fromTable:DB_TABLE_HOME];
+//}
+//
+//+ (void)deleteNameAtIdx:(NSInteger)Idx
+//{
+//    [self removeKey:@"groupname" AtIdx:Idx];
+//}
+//
+//+ (void)removeKey:(NSString *)key AtIdx:(NSInteger)Idx
+//{
+//    
+//}
+//#pragma mark - read
+//-(FQGroup *)read:(FQGroup *)model
+//{
+//    NSString *ID = [NSString stringWithFormat:@"abc%ld", (long)model.ID.row];
+//    return (FQGroup *)[self.store getObjectById:ID fromTable:DB_NAME];
+//}
+//
+//-(NSArray *)findAll
+//{
+//    NSArray *array = [self.store getAllItemsFromTable:DB_TABLE_HOME];
+//    return array;
+//}
+//
+//@end
 #endif

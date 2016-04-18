@@ -13,6 +13,8 @@
 @property (strong, nonatomic) NSString *groupname;//组名
 @property (nonatomic, assign) BOOL IsFinish;//是否完成
 @property (nonatomic, assign) NSInteger type;
+@property (nonatomic, assign) NSInteger todoOK;//完成个数
+@property (nonatomic, assign) NSInteger todoAll;//完成总数
 
 - (instancetype)initWithDict:(NSDictionary *)dict;
 + (instancetype)TodoWithDict:(NSDictionary *)dict;

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ViewController.h"
+#import "FQTodo.h"
 //#import "YTKKeyValueStore.h"
 typedef enum {
     GROUP_TYPE_NORMAL     = 0,
@@ -18,7 +19,7 @@ typedef enum {
     GROUP_TYPE_ADDING_CELL = 5,
     GROUP_TYPE_ADDED_CELL = 6
 }GROUPTYPE;
-
+@class FQTodo;
 @interface FQGroup : NSObject
 
 @property (strong, nonatomic) NSString *groupname;//组名
@@ -26,6 +27,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger todoAll;//完成总数
 @property (nonatomic, assign) BOOL IsFinish;//是否完成
 @property (nonatomic, assign) NSInteger type;
+@property (strong, nonatomic) NSMutableArray *todo;
 @property (strong, nonatomic) NSIndexPath *ID;
 
 - (instancetype)initWithDict:(NSDictionary *)dict;

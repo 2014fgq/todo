@@ -235,17 +235,17 @@ const float UI_CUES_WIDTH = 50.0f;
     tapCount = 0;
 }
 
-- (void)textFieldWillBeginEditing:(UITextField *)textField
-{
-    NSLog(@"textFieldWillBeginEditing");
-}
-- (void)textFieldWillEndEditing:(UITextField *)textField
-{
-    NSLog(@"textFieldWillEndEditing");
-}
+//- (void)textFieldWillBeginEditing:(UITextField *)textField
+//{
+//    NSLog(@"textFieldWillBeginEditing");
+//}
+//- (void)textFieldWillEndEditing:(UITextField *)textField
+//{
+//    NSLog(@"textFieldWillEndEditing");
+//}
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    NSLog(@"textFieldDidBeginEditing");
+    //NSLog(@"textFieldDidBeginEditing");
     //当开始点击textfield的时候，光标进入，有且只有触发一次,调用代理，告诉当前点击的textfield。
 //    if([self.delegate respondsToSelector:@selector(SetCurCellByIdxPath:)])
 //        [self.delegate SetCurCellByIdxPath:_groupModel.ID];
@@ -256,7 +256,7 @@ const float UI_CUES_WIDTH = 50.0f;
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    NSLog(@"textFieldDidEndEditing");
+    //NSLog(@"textFieldDidEndEditing");
     //输入结束，记录输入结果，并保存到Model
     _groupModel.groupname = textField.text;
     //textfield输入完毕时，键盘收回，调用tableview下滚
@@ -328,7 +328,7 @@ const float UI_CUES_WIDTH = 50.0f;
         
         // determine whether the item has been dragged far enough to initiate a delete / complete
         _markCompleteOnDragRelease = self.contentView.frame.origin.x > FQTODO_PANHEIGHT;
-        _deleteOnDragRelease = self.contentView.frame.origin.x < FQTODO_PANHEIGHT;
+        _deleteOnDragRelease = self.contentView.frame.origin.x < -FQTODO_PANHEIGHT;
         
         // indicate when the item have been pulled far enough to invoke the given action
         _tickLabel.textColor = _markCompleteOnDragRelease ?

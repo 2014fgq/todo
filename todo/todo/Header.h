@@ -11,8 +11,9 @@
 
 #ifdef DEBUG
 #define debugLog(...) NSLog(__VA_ARGS__)
-#define debugMethod() NSLog(@"%s", __func__)
+#define debugMethod() NSLog(@"%s-%@", __func__, [self class]);
 #define debug(...)    NSLog(@"%s"__VA_ARGS__, __func__)
+#define debugfunc(...)    NSLog(@"%s", __func__, __VA_ARGS__)
 #define debugframe(view) debugLog(@"%@", NSStringFromCGRect(view.frame));
 #else
 #define debugLog(...)
@@ -78,4 +79,8 @@
 #define FQTODO_NAVIGCOLOR 0x222e3b
 #define COMMITING_CREATE_CELL_HEIGHT 60
 #define NORMAL_CELL_FINISHING_HEIGHT 60
+
+
+#define NOTI_LASTDATA @"UpdateLatestData"
+#define NOTI_NEWDETAILWHENDISPLAY @"NewDetailIsDisplay"
 #endif /* Header_h */

@@ -17,7 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+        
     NewDetailView *newdetailView = [[NewDetailView alloc] initWithFrame:kScreenBounds];
     self.newdetailView = newdetailView;
     [self.view addSubview:newdetailView];
@@ -25,29 +25,27 @@
     // Setup your tableView.delegate and tableView.datasource,
     // then enable gesture recognition in one line.
     self.tableViewRecognizer = [self.tableView enableGestureTableViewWithDelegate:self];
-
-    //self.groups = self.groupArray;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(NewDetailWhenDisplay:) name:NOTI_NEWDETAILWHENDISPLAY object:nil];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     debugMethod();
 }
 
-#pragma mark - 懒加载
-# warning todo, 懒加载数据应该使用中文实例
-- (NSMutableArray *)groupArray
+- (void)dealloc
 {
-    if(!_groupArray)
+    debugMethod();
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTI_NEWDETAILWHENDISPLAY object:nil];
+}
+
+- (void) NewDetailWhenDisplay:(NSNotification *)noti{
+    if(noti.object == [DetailViewController class])
     {
-        _groupArray = [self.bl findAll];
-        if (_groupArray.count == 0) {
-            _groupArray = [FQGroup GroupsWithDefaultRows];
-        }
-        _groupArray = [self sortByIsFinish:_groupArray];
-        NSLog(@"lazy Ok! load counts %ld", (unsigned long)_groupArray.count);
+        if(self.groups.count != 0)
+            self.newdetailView.alpha = 0.f;
+        else
+            self.newdetailView.alpha = 1.f;
     }
-    
-    return _groupArray;
 }
 
 @end

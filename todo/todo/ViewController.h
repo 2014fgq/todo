@@ -12,10 +12,5 @@
 #import "BaseTableViewController.h"
 
 @interface ViewController : BaseTableViewController
-
-#define ADDING_CELL @"Continue..."
-#define DONE_CELL @"Done"
-#define DUMMY_CELL @"Dummy"
-
 @end
 
