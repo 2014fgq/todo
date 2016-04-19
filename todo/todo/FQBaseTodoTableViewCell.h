@@ -33,4 +33,5 @@
 - (void)ScrollUpWithIdxPath:(NSIndexPath *)IdxPath;
 - (void)ScrollDownWithIdxPath:(NSIndexPath *)IdxPath;
 - (void)needsDiscardRowAtIdxPath:(NSIndexPath *)IdxPath;
+- (void)SingleTapWithCell:(FQBaseTodoTableViewCell *)cell;
 @end

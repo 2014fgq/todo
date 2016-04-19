@@ -171,6 +171,11 @@
     NSLog(@"End to Edit! cell %ld text is Null!", (long)IndexPath.row);
 }
 
+- (void)SingleTapWithCell:(FQBaseTodoTableViewCell *)cell{
+    if([self respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)])
+        [self tableView:self.tableView didSelectRowAtIndexPath:cell.groupModel.ID];
+}
+
 #pragma mark Private Method
 
 - (void)moveRowToBottomForIndexPath:(NSIndexPath *)indexPath {

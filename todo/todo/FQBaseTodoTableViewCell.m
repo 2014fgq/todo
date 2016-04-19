@@ -54,7 +54,7 @@ const float UI_CUES_WIDTH = 50.0f;
 {
     [super layoutSubviews];
     self.textfield.frame = self.contentView.bounds;
-    self.textfield.frame = CGRectMake(0, 0, 320, NORMAL_CELL_FINISHING_HEIGHT);
+    //self.textfield.frame = CGRectMake(0, 0, 320, NORMAL_CELL_FINISHING_HEIGHT);
     
     // ensure the gradient layers occupy the full bounds
     _gradientLayer.frame = self.contentView.bounds;
@@ -157,6 +157,8 @@ const float UI_CUES_WIDTH = 50.0f;
 
 -(void) singleTap
 {
+    if([self.delegate respondsToSelector:@selector(SingleTapWithCell:)])
+        [self.delegate SingleTapWithCell:self];
     tapCount = 0;
 }
 
@@ -202,7 +204,7 @@ const float UI_CUES_WIDTH = 50.0f;
     
     IsDoubleClick = NO;
 }
-
+#pragma mark - 实现左右拉的效果
 - (void)addpanLabel
 {
     // add a tick and cross
