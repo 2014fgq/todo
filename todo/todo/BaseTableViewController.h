@@ -13,10 +13,9 @@
 @class FQGroupBL;
 @interface BaseTableViewController : UITableViewController
 @property (strong, nonatomic) NSMutableArray *groups;
-@property (strong, nonatomic) FQGroupBL *bl;
 @property (strong, nonatomic) JTTableViewGestureRecognizer *tableViewRecognizer;
-//@property (copy,   nonatomic) Class cellClass;
-//@property (copy,   nonatomic) Class cellModelClass;
+@property (copy,   nonatomic) Class cellClass;
+@property (copy,   nonatomic) Class cellModelClass;
 - (NSMutableArray *) sortByIsFinish:(NSArray *)array;
 - (NSInteger)GetLastUnFinish;
 

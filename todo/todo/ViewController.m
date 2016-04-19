@@ -12,18 +12,19 @@
 #import "UIColor+JTGestureBasedTableViewHelper.h"
 #import "UIColor+Hex.h"
 #import "FQTodoHomeCell.h"
+#import "FQTodoDetailCell.h"
 #import "DetailViewController.h"
 #import "FQGroupBL+PLIST.h"
+#import "FQTodo.h"
 // Configure your viewController to conform to JTTableViewGestureEditingRowDelegate
 // and/or JTTableViewGestureAddingRowDelegate depends on your needs
 @interface ViewController () //
-
+@property (strong, nonatomic) FQGroupBL *bl;
 @property (strong, nonatomic) NSMutableArray *groupArray;
 @end
 
 @implementation ViewController
 #pragma mark - View lifecycle
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
     }
@@ -41,8 +42,8 @@
     self.title = @"Todo";
     
     self.groups = self.groupArray;
-    //self.cellClass = [FQTodoHomeCell class];
-    //self.cellModelClass = [FQGroup class];
+    self.cellClass = [FQTodoHomeCell class];
+    self.cellModelClass = [FQGroup class];
 }
 
 - (void)dealloc
@@ -52,6 +53,15 @@
 }
 
 #pragma mark - 懒加载
+- (FQGroupBL *)bl
+{
+    if(!_bl)
+    {
+        _bl = [FQGroupBL sharedManager];
+    }
+    return _bl;
+}
+
 - (NSMutableArray *)groupArray
 {
     if(!_groupArray)
@@ -66,7 +76,6 @@
     
     return _groupArray;
 }
-
 #pragma mark UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -79,6 +88,8 @@
     FQGroup *group = [self.groups objectAtIndex:indexPath.row];
     detailViewController.title = group.groupname;
     detailViewController.groups = group.todo;
+    detailViewController.cellClass = [FQTodoDetailCell class];
+    detailViewController.cellModelClass = [FQTodo class];
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
@@ -105,6 +116,38 @@
     {
         [self.bl writewithArray:self.groups];
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    debugMethod();
+    [super viewDidAppear:animated];
+    for (FQGroup *group in self.groups) {
+        [group GroupCalcIsFinish];
+    }
+    [self.tableView reloadData];
+}
+
+//左右拉完成以后
+- (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer commitEditingState:(JTTableViewCellEditingState)state forRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableView *tableView = gestureRecognizer.tableView;
+    
+    // Row color needs update after datasource changes, reload it.
+    [tableView performSelector:@selector(reloadVisibleRowsExceptIndexPath:) withObject:indexPath afterDelay:JTTableViewRowAnimationDuration];
+    
+    [tableView beginUpdates];
+    if (state == JTTableViewCellEditingStateLeft) {
+        // An example to discard the cell at JTTableViewCellEditingStateLeft
+        [self.groups removeObjectAtIndex:indexPath.row];
+        [[NSNotificationCenter defaultCenter]postNotificationName:NOTI_LASTDATA object:self.class userInfo:nil];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+    } else if (state == JTTableViewCellEditingStateRight) {
+        [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    } else {
+        // JTTableViewCellEditingStateMiddle shouldn't really happen in
+        // - [JTTableViewGestureDelegate gestureRecognizer:commitEditingState:forRowAtIndexPath:]
+    }
+    [tableView endUpdates];
 }
 
 @end

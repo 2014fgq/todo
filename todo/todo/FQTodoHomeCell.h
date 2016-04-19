@@ -7,27 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FQGroup.h"
-//#import "MCSwipeTableViewCell.h"
-//@interface FQTodoHomeCell : MCSwipeTableViewCell
-#import "UIColor+Hex.h"
-@class FQGroup;
-@protocol FQTodoHomeCellDelegate;
+#import "FQBaseTodoTableViewCell.h"
+//@class FQGroup;
 
-@interface FQTodoHomeCell : UITableViewCell <UITextFieldDelegate>
-@property (weak, nonatomic) UITextField *textfield;
+@interface FQTodoHomeCell : FQBaseTodoTableViewCell
+
 @property (weak, nonatomic) UILabel *label;
-@property (weak, nonatomic) UILabel *seplabel;
-@property (strong, nonatomic) FQGroup *groupModel;
-@property (weak, nonatomic) id <FQTodoHomeCellDelegate> delegate;
-- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
+
 + (instancetype)TodoHomeCellWithTableView:(UITableView *)tableView;
-- (void)setGroupModel:(FQGroup *)groupModel;
-- (void)handlePan:(UIPanGestureRecognizer *)recognizer;
 @end
 
-@protocol FQTodoHomeCellDelegate <NSObject>
-- (void)ScrollUpWithIdxPath:(NSIndexPath *)IdxPath;
-- (void)ScrollDownWithIdxPath:(NSIndexPath *)IdxPath;
-- (void)needsDiscardRowAtIdxPath:(NSIndexPath *)IdxPath;
-@end

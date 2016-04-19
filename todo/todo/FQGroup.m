@@ -62,8 +62,10 @@
         for (NSDictionary *dict in array) {
             FQTodo *todo = [FQTodo TodoWithDict:dict];
             [mutablearray addObject:todo];
+            todo.IsFinish ? ++self.todoOK : 0;
         }
         self.todo = mutablearray;
+        [self GroupCalcIsFinish];
     }
     return self;
 }
@@ -80,6 +82,16 @@
     //    NSLog(@"ignore the key %@" , key);
     //}
 }
+#pragma mark - private method
+- (void)GroupCalcIsFinish
+{
+    NSInteger Index = 0;
+    for (FQTodo *todo in self.todo) {
+        todo.IsFinish ? ++Index : 0;
+    }
+    self.todoOK = Index;
+    self.todoAll = self.todo.count;
+}
 
 #pragma mark - Model to dict
 + (NSDictionary *)DictWithModel:(FQGroup *)model
@@ -88,8 +100,6 @@
     [dict setValue:model.groupname forKey:@"groupname"];
     [dict setValue:[NSNumber numberWithInteger:model.type] forKey:@"type"];
     [dict setValue:[NSNumber numberWithInteger:model.IsFinish] forKey:@"IsFinish"];
-    [dict setValue:[NSNumber numberWithInteger:model.todoOK] forKey:@"todoOK"];
-    [dict setValue:[NSNumber numberWithInteger:model.todoAll] forKey:@"todoAll"];
 
     NSArray *array = model.todo;
     NSMutableArray *mutablearray = [NSMutableArray array];

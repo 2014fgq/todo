@@ -11,10 +11,10 @@
 #import "Header.h"
 @class  FQTodo;
 @interface FQTodoBL : NSObject
-- (BOOL)remove:(FQTodo *)model atIdx:(NSInteger)Idx;
-- (BOOL)insertwithmodel:(FQTodo *)model atIdx:(NSInteger)Idx;
-- (BOOL)replacewithmodel:(FQTodo *)model atIdx:(NSInteger)Idx;
-- (BOOL)writewithArray:(NSArray *)array;
-+ (instancetype)sharedManager;
--(NSMutableArray *)findAll;
+//- (BOOL)remove:(FQTodo *)model atIdx:(NSInteger)Idx;
+//- (BOOL)insertwithmodel:(FQTodo *)model atIdx:(NSInteger)Idx;
+//- (BOOL)replacewithmodel:(FQTodo *)model atIdx:(NSInteger)Idx;
+//- (BOOL)writewithArray:(NSArray *)array;
+//+ (instancetype)sharedManager;
+//-(NSMutableArray *)findAll;
 @end

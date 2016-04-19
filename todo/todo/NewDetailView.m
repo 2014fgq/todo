@@ -24,11 +24,6 @@
         self.label = label;
         //配置右边的label
         self.label.adjustsFontSizeToFitWidth = YES;
-        //self.label.frame = CGRectMake(320, 20, 35, 20);
-        //配置圆角
-        [self.label.layer setBorderWidth:2.0];
-        self.label.layer.cornerRadius = 8;
-        self.label.layer.masksToBounds = true;
         
         //配置内容
         self.label.textAlignment = NSTextAlignmentCenter;//UITextAlignmentCenter 在ios6废弃

@@ -47,5 +47,4 @@
             self.newdetailView.alpha = 1.f;
     }
 }
-
 @end

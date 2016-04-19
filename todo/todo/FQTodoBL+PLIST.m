@@ -9,8 +9,8 @@
 #import "FQTodoBL+PLIST.h"
 @interface FQTodoBL ()
 - (NSString *)applicationDocumentsDirectoryFile;
-- (void)createEditableCopyOfDatabaseIfNeeded;
 @end
+
 
 @implementation FQTodoBL
 #define TODO_PLIST @"todo.plist"

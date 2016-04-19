@@ -10,7 +10,8 @@
 #import "FQGroupBL+PLIST.h"
 #import "JTTransformableTableViewCell.h"
 #import "FQTodoHomeCell.h"
-@interface BaseTableViewController () <JTTableViewGestureAddingRowDelegate, JTTableViewGestureMoveRowDelegate, JTTableViewGestureEditingRowDelegate, FQTodoHomeCellDelegate>
+#import "FQDummyCellTableViewCell.h"
+@interface BaseTableViewController () <JTTableViewGestureAddingRowDelegate, JTTableViewGestureMoveRowDelegate, JTTableViewGestureEditingRowDelegate, FQBaseTodoTableViewCellDelegate>
 
 @property (nonatomic, strong) id grabbedObject;
 @end
@@ -45,16 +46,6 @@
 }
 
 #pragma mark - 懒加载
-# warning 懒加载数据应该使用中文实例
-- (FQGroupBL *)bl
-{
-    if(!_bl)
-    {
-        _bl = [FQGroupBL sharedManager];
-    }
-    return _bl;
-}
-
 - (void)SetGroups:(NSMutableArray *)groups
 {
     _groups = groups;
@@ -140,7 +131,7 @@
     [UIView animateWithDuration:0.25 animations:^{
         self.view.transform = CGAffineTransformMakeTranslation(0, scroll);
     }];
-    for(FQTodoHomeCell* cell in [self.tableView visibleCells])
+    for(FQBaseTodoTableViewCell* cell in [self.tableView visibleCells])
     {
         [UIView animateWithDuration:0.3
                          animations:^{
@@ -160,10 +151,10 @@
     NSIndexPath *IndexPath = IdxPath;
     NSIndexPath *IndexPath_tmp = IndexPath;
     [self.tableView reloadData];
-    for(FQTodoHomeCell* cell in [self.tableView visibleCells])
+    for(FQBaseTodoTableViewCell* cell in [self.tableView visibleCells])
     {
-        //判断是否为FQToDoHomeCell
-        if([cell isKindOfClass:[FQTodoHomeCell class]])
+        //判断是否为FQBaseTodoTableViewCell
+        if([cell isKindOfClass:[self.cellClass class]])
         {
             IndexPath_tmp = cell.groupModel.ID;
             cell.groupModel.ID = IndexPath;
@@ -286,19 +277,21 @@
             cell.textLabel.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
             return cell;
         }
-    } else {
-        FQTodoHomeCell *cell = [FQTodoHomeCell TodoHomeCellWithTableView:self.tableView];
+    }
+    else if (GROUP_TYPE_DUMMY == group.type){
+        FQDummyCellTableViewCell *cell = [FQDummyCellTableViewCell CellWithTableView:self.tableView];
+        return cell;
+    }
+    else {
+        FQBaseTodoTableViewCell *cell = [self.cellClass CellWithTableView:self.tableView];
         //设置cell的默认底色
         cell.contentView.backgroundColor = backgroundColor;
-        
         //记录tap
         group.ID = indexPath;
-        
         //设置delegate
         cell.delegate = self;
-
+        //设置数据模型
         cell.groupModel = group;
-        //NSLog(@"%ld=%f", (long)cell.groupModel.ID.row, cell.alpha);
         
         return cell;
     }
@@ -367,12 +360,11 @@
 
 
 #pragma mark JTTableViewGestureEditingRowDelegate
-//左右拉的情况
+//左右拉过程中
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer didEnterEditingState:(JTTableViewCellEditingState)state forRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    
-    if([cell isKindOfClass:[FQTodoHomeCell class]]) {
-        FQTodoHomeCell *fqcell = (FQTodoHomeCell *)cell;
+    if([cell isKindOfClass:[self.cellClass class]]) {
+        FQBaseTodoTableViewCell *fqcell = (FQBaseTodoTableViewCell *)cell;
         [fqcell handlePan:[gestureRecognizer valueForKey:@"panRecognizer"]];
     }
 }
@@ -382,8 +374,12 @@
     return YES;
 }
 
+//左右拉完成以后
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer commitEditingState:(JTTableViewCellEditingState)state forRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableView *tableView = gestureRecognizer.tableView;
+    
+    // Row color needs update after datasource changes, reload it.
+    [tableView performSelector:@selector(reloadVisibleRowsExceptIndexPath:) withObject:indexPath afterDelay:JTTableViewRowAnimationDuration];
     
     NSIndexPath *rowToBeMovedToBottom = nil;
     
@@ -404,16 +400,8 @@
     } else {
         // JTTableViewCellEditingStateMiddle shouldn't really happen in
         // - [JTTableViewGestureDelegate gestureRecognizer:commitEditingState:forRowAtIndexPath:]
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        if([cell isKindOfClass:[FQTodoHomeCell class]]) {
-            FQTodoHomeCell *fqcell = (FQTodoHomeCell *)cell;
-            [fqcell handlePan:[gestureRecognizer valueForKey:@"panRecognizer"]];
-        }
     }
     [tableView endUpdates];
-    
-    // Row color needs update after datasource changes, reload it.
-    [tableView performSelector:@selector(reloadVisibleRowsExceptIndexPath:) withObject:indexPath afterDelay:JTTableViewRowAnimationDuration];
     
     //移动cell的位置
     if (rowToBeMovedToBottom) {
@@ -429,6 +417,7 @@
 }
 
 - (void)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer needsCreatePlaceholderForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     self.grabbedObject = [self.groups objectAtIndex:indexPath.row];
     FQGroup *_group = [FQGroup initwithObj:DUMMY_CELL withType:GROUP_TYPE_DUMMY];
     [self.groups replaceObjectAtIndex:indexPath.row withObject:_group];
