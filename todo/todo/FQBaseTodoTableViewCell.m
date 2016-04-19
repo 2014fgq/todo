@@ -68,8 +68,6 @@ const float UI_CUES_WIDTH = 50.0f;
     
     if(self.groupModel.type == GROUP_TYPE_ADDED_CELL)
     {
-        //确保textfield已经被加载可见，可以成为第一焦点
-        self.groupModel.type = GROUP_TYPE_NORMAL;
         //允许修改，放在becomeFirstResponder失败，猜测becomeFirstResponder应该是即时运行的
         IsDoubleClick = true;
         [self.textfield becomeFirstResponder];
@@ -133,10 +131,16 @@ const float UI_CUES_WIDTH = 50.0f;
     [self.textfield resignFirstResponder];
     return NO;
 }
-# warning 单击跳转功能未实现，双击修改功能有bug
+# warning 双击修改功能有bug
 //实现单击跳转，双击修改textfield功能
 - ( BOOL )textFieldShouldBeginEditing:( UITextField *)textField
 {
+    if(self.groupModel.type == GROUP_TYPE_ADDED_CELL)
+    {
+        //确保textfield已经被加载可见，可以成为第一焦点
+        self.groupModel.type = GROUP_TYPE_NORMAL;
+        return true;
+    }
     //如果两次点击的时间间隔小于1秒，则断定为双击事件
     tapCount++;
     switch (tapCount)

@@ -28,10 +28,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(NewDetailWhenDisplay:) name:NOTI_NEWDETAILWHENDISPLAY object:nil];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    debugMethod();
-}
-
 - (void)dealloc
 {
     debugMethod();
