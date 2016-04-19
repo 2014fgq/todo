@@ -29,7 +29,7 @@
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
     if (self = [super initWithReuseIdentifier:reuseIdentifier]) {
-        
+        self.textfield.frame = CGRectMake(0, 0, 100, self.contentView.frame.size.height);
     }
     return self;
 }

@@ -7,7 +7,7 @@
 //
 
 #import "BaseTableViewController.h"
-#import "FQGroupBL+PLIST.h"
+//#import "FQGroupBL+PLIST.h"
 #import "JTTransformableTableViewCell.h"
 #import "FQTodoHomeCell.h"
 #import "FQDummyCellTableViewCell.h"
@@ -58,7 +58,7 @@
     CHECK_NULLPOINTER(array)
     NSMutableArray *finisharray = [NSMutableArray array];
     NSMutableArray *notfinisharray = [NSMutableArray array];
-    for (FQGroup *group in array) {
+    for (FQTodo *group in array) {
         if(group.IsFinish)
         {
             [finisharray addObject:group];
@@ -81,7 +81,7 @@
     self.groups = [self sortByIsFinish:self.groups];
     
     //获取
-    for (FQGroup *group in self.groups) {
+    for (FQTodo *group in self.groups) {
         if(group.IsFinish)
         {
             break;
@@ -96,7 +96,6 @@
 }
 
 #pragma mark - FQTodoHomeCellDelegate
-# warning cell的delegate不太规范，应该包含cell的参数
 # warning 滚动变色的功能有bug,在tablewview中间捏合加入cell之后，点击修改的效果有bug
 - (void)ScrollUpWithIdxPath:(NSIndexPath *)IdxPath
 {
@@ -180,7 +179,7 @@
 
 - (void)moveRowToBottomForIndexPath:(NSIndexPath *)indexPath {
     NSIndexPath *desIndexPath = nil;
-    FQGroup *group = [self.groups objectAtIndex:indexPath.row];
+    FQTodo *group = [self.groups objectAtIndex:indexPath.row];
     
     if (group.IsFinish) {
         [self.groups removeObjectAtIndex:indexPath.row];
@@ -218,7 +217,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    FQGroup *group = [self.groups objectAtIndex:indexPath.row];
+    FQTodo *group = [self.groups objectAtIndex:indexPath.row];
     //UIColor *backgroundColor = [[UIColor redColor] colorWithHueOffset:0.12 * indexPath.row / [self tableView:tableView numberOfRowsInSection:indexPath.section]];
     
     UIColor *backgroundColor = [UIColor colorWithHex:0x2B3A4B];
@@ -319,7 +318,7 @@
     //viewcontroller.tableView.contentInset = UIEdgeInsetsMake(NORMAL_CELL_FINISHING_HEIGHT, 0, 0, 0);
     //viewcontroller.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(NORMAL_CELL_FINISHING_HEIGHT, 0, 0, 0);
     //配置UINavigationController
-# warning 颜色可以不用16进制了。废弃16进制获取颜色的功能
+
     self.navigationController.navigationBar.barTintColor =
     [UIColor colorWithHex:FQTODO_NAVIGCOLOR];
     //self.navigationController.navigationBar.backgroundColor = [UIColor blueColor];
@@ -438,8 +437,34 @@
     [self.groups replaceObjectAtIndex:indexPath.row withObject:self.grabbedObject];
     self.grabbedObject = nil;
     
+    [self BaseViewControllerNeedChangeIsFinish:indexPath];
     [[NSNotificationCenter defaultCenter]postNotificationName:NOTI_LASTDATA object:self.class userInfo:nil];
     //debugLog(@"End to Move %d, %lu", [self.bl writewithArray:self.groups], (unsigned long)self.groups.count);
+}
+
+- (void)BaseViewControllerNeedChangeIsFinish:(NSIndexPath *)indexPath{
+    FQGroup *group = [self.groups objectAtIndex:indexPath.row];
+    NSInteger nextIdx = indexPath.row + 1;
+    NSInteger preIdx = indexPath.row - 1;
+    //已经完成的状态下，由下向上拉
+    if(group.IsFinish)
+    {
+        if(nextIdx < self.groups.count)
+        {
+            FQGroup *nextgroup = [self.groups objectAtIndex:nextIdx];
+            if(group.IsFinish != nextgroup.IsFinish)
+                group.IsFinish = nextgroup.IsFinish;
+        }
+    }
+    else{
+        if(preIdx > 0)
+        {
+            FQGroup *pregroup = [self.groups objectAtIndex:preIdx];
+            if(group.IsFinish != pregroup.IsFinish)
+                group.IsFinish = pregroup.IsFinish;
+        }
+    }
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 #pragma mark - hide keyboard
