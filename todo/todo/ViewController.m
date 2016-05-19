@@ -34,7 +34,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadingLatestDaily:) name:NOTI_LASTDATA object:nil];
+
     // Setup your tableView.delegate and tableView.datasource,
     // then enable gesture recognition in one line.
     self.tableViewRecognizer = [self.tableView enableGestureTableViewWithDelegate:self];
@@ -44,12 +44,20 @@
     self.groups = self.groupArray;
     self.cellClass = [FQTodoHomeCell class];
     self.cellModelClass = [FQGroup class];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadingLatestDaily:) name:NOTI_LASTDATA object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuControllerWillShow:) name:UIMenuControllerWillShowMenuNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuControllerWillHide:) name:UIMenuControllerWillHideMenuNotification object:nil];
+
 }
 
 - (void)dealloc
 {
     debugMethod();
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTI_LASTDATA object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIMenuControllerMenuFrameDidChangeNotification object:nil];
 }
 
 #pragma mark - 懒加载
@@ -149,5 +157,36 @@
     }
     [tableView endUpdates];
 }
+
+- (void)MenuControllerWhenHide:(NSNotification *)noti{
+    debugMethod();
+}
+
+-(void)menuControllerWillShow:(NSNotification *)notification{
+    debugMethod();
+    //Remove Will Show Notif
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIMenuControllerWillShowMenuNotification object:nil];
+    
+    //[UIMenuController sharedMenuController].menuVisible = false;
+    //Hide the Original View
+    UIMenuController* menuController = [UIMenuController sharedMenuController];
+    CGPoint origin = menuController.menuFrame.origin;
+    CGSize size = menuController.menuFrame.size;
+    CGRect menuFrame;
+    menuFrame.origin = origin;
+    menuFrame.size = size;
+    //[menuController setMenuVisible:NO animated:NO];
+    menuFrame.origin = CGPointMake(-250, -250);    
+    //Modify its Target Rect
+    menuController.arrowDirection = UIMenuControllerArrowUp;
+    [menuController setTargetRect:menuFrame inView:self.view];
+    [menuController setMenuVisible:YES animated:YES];
+}
+
+-(void)menuControllerWillHide:(NSNotification *)notification{
+    debugMethod();
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuControllerWillShow:) name:UIMenuControllerWillShowMenuNotification object:nil];
+}
+
 
 @end

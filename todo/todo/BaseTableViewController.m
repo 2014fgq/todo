@@ -11,8 +11,7 @@
 #import "JTTransformableTableViewCell.h"
 #import "FQTodoHomeCell.h"
 #import "FQDummyCellTableViewCell.h"
-@interface BaseTableViewController () <JTTableViewGestureAddingRowDelegate, JTTableViewGestureMoveRowDelegate, JTTableViewGestureEditingRowDelegate, FQBaseTodoTableViewCellDelegate>
-
+@interface BaseTableViewController () <JTTableViewGestureAddingRowDelegate, JTTableViewGestureEditingRowDelegate, FQBaseTodoTableViewCellDelegate, JTTableViewGestureMoveRowDelegate>
 @property (nonatomic, strong) id grabbedObject;
 @end
 
@@ -417,6 +416,7 @@
 #pragma mark JTTableViewGestureMoveRowDelegate
 # warning 如果移动的位置超过最后一个未完成的，变为完成的状态
 - (BOOL)gestureRecognizer:(JTTableViewGestureRecognizer *)gestureRecognizer canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self.tableView setEditing:!self.tableView.editing];
     return YES;
 }
 
@@ -479,4 +479,25 @@
     //NSLog(@"scrollViewWillBeginDragging");
     [self.view endEditing:YES];
 }
+
+#pragma mark - tableview datasource move
+//- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath*)indexPath
+//{
+//    return YES;
+//}
+//
+//- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath*)sourceIndexPath
+//      toIndexPath:(NSIndexPath *)destinationIndexPath
+//{
+//    FQGroup *group = [self.groups objectAtIndex:sourceIndexPath.row];
+//    [self.groups removeObjectAtIndex:sourceIndexPath.row];
+//    [self.groups insertObject:group atIndex:destinationIndexPath.row];
+//}
+//
+//- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
+//           editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return  UITableViewCellEditingStyleNone;
+//}
+
 @end

@@ -26,7 +26,7 @@
     // then enable gesture recognition in one line.
     self.tableViewRecognizer = [self.tableView enableGestureTableViewWithDelegate:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(NewDetailWhenDisplay:) name:NOTI_NEWDETAILWHENDISPLAY object:nil];
-}
+    }
 
 - (void)dealloc
 {
@@ -43,4 +43,10 @@
             self.newdetailView.alpha = 1.f;
     }
 }
+
+- (void)longPressGestureRecognizer:(UILongPressGestureRecognizer *)recognizer {
+    debugMethod();
+}
+
+
 @end

@@ -37,6 +37,8 @@
     if (!cell) {
         cell = [[FQTodoHomeCell alloc] initWithReuseIdentifier:ID];
     }
+
+    cell.contentView.frame = CGRectMake(0, 0, cell.contentView.frame.size.width+100, cell.contentView.frame.size.height);
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     //配置cell的颜色，而不是配置cell.contentView的背景色
@@ -48,7 +50,7 @@
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
     if (self = [super initWithReuseIdentifier:reuseIdentifier]) {        
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(320, 20, 50, 30)];
+        UILabel *label = [[UILabel alloc] init];
         self.label  = label;
         [self.contentView addSubview:self.label];
         

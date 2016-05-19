@@ -131,7 +131,7 @@ const float UI_CUES_WIDTH = 50.0f;
     [self.textfield resignFirstResponder];
     return NO;
 }
-# warning 双击修改功能有bug
+# warning 长按功能有bug
 //实现单击跳转，双击修改textfield功能
 - ( BOOL )textFieldShouldBeginEditing:( UITextField *)textField
 {
@@ -161,8 +161,8 @@ const float UI_CUES_WIDTH = 50.0f;
 
 -(void) singleTap
 {
-    if([self.delegate respondsToSelector:@selector(SingleTapWithCell:)])
-        [self.delegate SingleTapWithCell:self];
+    //if([self.delegate respondsToSelector:@selector(SingleTapWithCell:)])
+    //    [self.delegate SingleTapWithCell:self];
     tapCount = 0;
 }
 
@@ -170,6 +170,7 @@ const float UI_CUES_WIDTH = 50.0f;
 {
     IsDoubleClick = true;
     tapCount = 0;
+    [UIMenuController sharedMenuController].menuVisible = NO;
 }
 
 //- (void)textFieldWillBeginEditing:(UITextField *)textField
